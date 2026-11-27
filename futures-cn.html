@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>国内期货白话手册：从保证金到月份纺锤体 | Patrick Yang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-paper: #FAF8F5;
+      --bg-card: #F2EFE9;
+      --text-main: #1E293B;
+      --text-muted: #475569;
+      --accent-navy: #1E3A8A;
+      --accent-crimson: #991B1B;
+      --border-subtle: #E2DDD5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Inter", sans-serif;
+      font-size: 17px;
+      line-height: 1.85;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: var(--accent-navy);
+      z-index: 1000;
+      transition: width 0.1s ease-out;
+    }
+
+    header.site-nav {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px 20px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    header.site-nav a {
+      color: var(--accent-navy);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    main.article-container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 44px 20px 80px;
+    }
+
+    .category-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-navy);
+      margin-bottom: 14px;
+    }
+
+    h1.article-title {
+      font-family: "Noto Serif SC", "Songti SC", Georgia, serif;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: #0F172A;
+      margin-bottom: 16px;
+    }
+
+    .article-subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .meta-line {
+      font-size: 14px;
+      color: var(--text-muted);
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 32px;
+    }
+
+    .epistemic-box {
+      background-color: var(--bg-card);
+      border-left: 4px solid var(--accent-navy);
+      padding: 18px 20px;
+      margin-bottom: 36px;
+      border-radius: 0 6px 6px 0;
+      font-size: 14.5px;
+      line-height: 1.75;
+      color: var(--text-muted);
+    }
+
+    .epistemic-box strong { color: var(--text-main); }
+
+    h2 {
+      font-family: "Noto Serif SC", "Songti SC", Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #0F172A;
+      margin: 52px 0 18px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-subtle);
+      scroll-margin-top: 16px;
+    }
+
+    h3 {
+      font-family: "Noto Serif SC", "Songti SC", Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #0F172A;
+      margin: 30px 0 12px;
+    }
+
+    p {
+      margin-bottom: 1.45em;
+      text-align: justify;
+    }
+
+    a { color: var(--accent-navy); }
+
+    blockquote.fact-quote {
+      border-left: 3px solid #94A3B8;
+      padding: 4px 0 4px 18px;
+      margin: 26px 0;
+      color: #334155;
+      font-size: 16px;
+    }
+
+    .source-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      background: #E2E8F0;
+      color: #334155;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
+
+    .ledger-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .ledger-card {
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .ledger-card.bureaucracy { background: #FEF2F2; border-color: #FECACA; }
+    .ledger-card.solution { background: #EFF6FF; border-color: #BFDBFE; }
+
+    .ledger-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .ledger-card.bureaucracy .ledger-label { color: var(--accent-crimson); }
+    .ledger-card.solution .ledger-label { color: var(--accent-navy); }
+
+    .ledger-num {
+      font-family: "Noto Serif SC", serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0F172A;
+      line-height: 1.4;
+    }
+
+    .ledger-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    ul.pillar-list { margin: 20px 0 28px 20px; }
+    ul.pillar-list li { margin-bottom: 14px; }
+
+    ol.step-list { margin: 20px 0 28px 22px; }
+    ol.step-list li { margin-bottom: 14px; }
+
+    .highlight-ink {
+      font-weight: 600;
+      color: #0F172A;
+      background: linear-gradient(transparent 62%, #E0E7FF 62%);
+    }
+
+    .plain-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 24px 0;
+      font-size: 15.5px;
+      line-height: 1.8;
+    }
+
+    .plain-box .plain-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--accent-navy);
+      margin-bottom: 6px;
+    }
+
+    .table-wrap { overflow-x: auto; margin: 24px 0; }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14.5px;
+      line-height: 1.6;
+      min-width: 560px;
+    }
+
+    table.data-table th,
+    table.data-table td {
+      border: 1px solid var(--border-subtle);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.data-table th { background: var(--bg-card); font-weight: 600; }
+
+    .figure-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 24px 0 8px;
+    }
+
+    .figure-box svg { width: 100%; height: auto; display: block; }
+
+    .figure-caption {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+
+    .calc-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 16px;
+      margin: 8px 0 12px;
+      font-size: 14px;
+    }
+
+    .calc-controls label { display: flex; flex-direction: column; gap: 4px; color: var(--text-muted); }
+
+    .calc-controls select,
+    .calc-controls input[type="number"],
+    #glossary-search {
+      font: inherit;
+      font-size: 15px;
+      padding: 7px 10px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      background: #FFFFFF;
+      color: var(--text-main);
+    }
+
+    .calc-controls input[type="range"] { width: 100%; accent-color: var(--accent-navy); }
+
+    .calc-readout {
+      font-size: 14.5px;
+      line-height: 1.7;
+      background: var(--bg-card);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+    }
+
+    #glossary-search { width: 100%; margin: 6px 0 18px; }
+
+    dl.glossary dt {
+      font-weight: 600;
+      color: #0F172A;
+      margin-top: 18px;
+    }
+
+    dl.glossary dt .en {
+      font-weight: 400;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+
+    dl.glossary dd {
+      margin: 2px 0 0 0;
+      font-size: 15.5px;
+      line-height: 1.75;
+      color: #334155;
+    }
+
+    .glossary-group {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--accent-navy);
+      margin: 30px 0 4px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    #glossary-empty { display: none; color: var(--text-muted); font-size: 15px; }
+
+    ul.checklist { list-style: none; margin: 20px 0 28px; }
+    ul.checklist li {
+      padding: 10px 14px 10px 44px;
+      position: relative;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 0;
+    }
+    ul.checklist li::before {
+      content: "";
+      position: absolute;
+      left: 14px;
+      top: 17px;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--accent-navy);
+      border-radius: 3px;
+    }
+
+    nav.toc { margin: 8px 0 32px; }
+    nav.toc ol { margin-left: 22px; }
+    nav.toc li { margin-bottom: 4px; font-size: 16px; }
+
+    footer.article-footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 14px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer.article-footer a { color: var(--accent-navy); text-decoration: none; }
+
+    @media (max-width: 640px) {
+      h1.article-title { font-size: 25px; }
+      body { font-size: 16px; }
+      .ledger-grid { grid-template-columns: 1fr; }
+      .calc-controls { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <header class="site-nav">
+    <span>CWCL · 制度比较与公共观察</span>
+    <a href="./index.html">← 《期权白话手册》</a>
+  </header>
+
+  <main class="article-container" id="top">
+    <div class="category-tag">Futures Primer · 国内期货与纺锤体</div>
+    <h1 class="article-title">国内商品期货与股指期货白话手册：从保证金到“月份纺锤体”</h1>
+    <div class="article-subtitle">《期权白话手册》的姊妹篇。读完这一页，你应当能说清国内六家期货交易所各管什么，看懂一份期货合约和一笔保证金账单，算出股指期货的贴水与套保手数，并理解作者的纺锤体理论如何延伸到期货市场。</div>
+    <div class="meta-line">作者：Patrick Yang &nbsp;|&nbsp; 2026年11月 &nbsp;|&nbsp; 前置阅读：<a href="./index.html">《期权白话手册》</a>（不读也能看，读过更好）</div>
+
+    <div class="epistemic-box">
+      <strong>【信源与观点边界声明】</strong><br>
+      本文关于国内期货市场的<strong>制度与规则</strong>（交易所分工、保证金与逐日结算、涨跌停与持仓限额、交割与强平、股指期货的现金交割与基差等），转述自《中华人民共和国期货和衍生品法》、中国证监会、<strong>上海期货交易所、上海国际能源交易中心、大连商品交易所、郑州商品交易所、中国金融期货交易所、广州期货交易所</strong>的公开业务规则与投资者教育材料，以及中国期货业协会的公开资料；金融理论部分参考 John C. Hull 的教科书《期权、期货及其他衍生品》。本文是转述与白话改写，不是逐字引用。<br><br>
+      <strong>重要提醒：</strong>保证金比例、手续费、涨跌停幅度、持仓限额、交易时间、投资者适当性门槛、合约规格与上市品种，<strong>交易所和期货公司会随时调整</strong>，本文凡出现的具体数字都只是<strong>学习用的示例或假设值</strong>，我没有逐条核对到当日公告；真实交易前请以交易所公告和你的期货公司通知为准。<br><br>
+      文中的<strong>“期货月份纺锤体”及其全部读法、对照与参数设想</strong>，是在作者 Patrick Yang 的“双纺锤体与焦距扩散”框架基础上做的<strong>延伸推演</strong>，目前只是概念设想，<strong>没有规格书、没有代码、没有任何真实行情校准</strong>；文中所有价格与账户数字均为编造的假设。<br><br>
+      本文由 AI（Claude）依作者构思辅助起草，属于学习材料，<strong>不构成任何投资建议、买卖建议或收益承诺</strong>。期货的杠杆很高，可能在极短时间内亏掉全部保证金，甚至出现亏损超过账户资金的情形。境外居民能否以及如何参与境内期货，取决于相关规则，本文不作任何建议。
+    </div>
+
+    <h2>怎么读这一页</h2>
+
+    <p>全页十二节，前面是地基，后面是应用，第十节是纺锤体的延伸。每节末尾有“白话一句话”，只读这些句子也能抓住主干。</p>
+
+    <nav class="toc">
+      <ol>
+        <li><a href="#f1">期货和期权有什么不一样：先看一张对照表</a></li>
+        <li><a href="#f2">市场地图：六家交易所和它们的品种</a></li>
+        <li><a href="#f3">一份期货合约：规格、报价与保证金</a></li>
+        <li><a href="#f4">逐日盯市：一笔保证金账单怎么走到“追加保证金”</a></li>
+        <li><a href="#f5">基差、期限结构与主力合约：看懂价格的“形状”</a></li>
+        <li><a href="#f6">交易制度：涨跌停、持仓限额、交割与强平</a></li>
+        <li><a href="#f7">股指期货专章：IF、IH、IC、IM</a></li>
+        <li><a href="#f8">商品期货专章：产业链、套保与套利</a></li>
+        <li><a href="#f9">期货期权：把第一本手册接上来</a></li>
+        <li><a href="#f10">作者构思延伸：期货版纺锤体</a></li>
+        <li><a href="#f11">实操：从开户前到平仓的完整流程</a></li>
+        <li><a href="#glossary">术语表：一百个名词的白话解释</a></li>
+      </ol>
+    </nav>
+
+    <div class="plain-box">
+      <span class="plain-label">读完你应当能做到</span>
+      看到“螺纹钢 RB 一手”，说出它值多少钱、要押多少保证金、涨跌 1% 赚亏多少；看到“IF 当月合约比指数低 40 点”，说出这是贴水、年化大约多少、对冲股票要卖几手；看到一条期货曲线，判断哪几个月份“好成交”、哪几个月份“只是挂着名”。
+    </div>
+
+    <!-- ===================== f1 ===================== -->
+    <h2 id="f1">一、期货和期权有什么不一样：先看一张对照表</h2>
+
+    <p>用最短的话区分：<strong>期权是“买一个选择权”，期货是“签一份必须履行的合同”</strong>。期权的买方可以放弃，期货的双方都不能放弃，只能在到期前反向平仓了结。也正因为双方都有义务，期货没有权利金，却有<strong>保证金</strong>和<strong>每天结算盈亏</strong>。</p>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>维度</th><th>期权（第一本手册）</th><th>国内期货（本手册）</th></tr></thead>
+        <tbody>
+          <tr><td>权利与义务</td><td>买方有权利没义务，卖方有义务</td><td>买卖双方都有义务</td></tr>
+          <tr><td>成本</td><td>买方付权利金，卖方收权利金并交保证金</td><td>双方都交保证金，没有权利金</td></tr>
+          <tr><td>最大亏损</td><td>买方是权利金；卖方可能很大</td><td>双方理论上都可能亏损很大（价格反向大幅波动）</td></tr>
+          <tr><td>盈亏结算</td><td>平仓或到期时结算</td><td><strong>每个交易日收盘后逐日结算</strong>，盈亏当天进出账户</td></tr>
+          <tr><td>方向</td><td>四种基本动作</td><td>做多或做空，两个方向都很方便</td></tr>
+          <tr><td>时间价值</td><td>有，Theta 每天流逝</td><td>没有时间价值，但有“持有成本”和期限结构</td></tr>
+          <tr><td>日内交易</td><td>美股期权当日可买卖</td><td>可当日多次开平（T+0），部分品种平今仓手续费更高</td></tr>
+          <tr><td>价格限制</td><td>美股个股期权无涨跌停</td><td><strong>设有涨跌停板</strong>，封死时可能平不了仓</td></tr>
+          <tr><td>到期</td><td>价内通常自动行权</td><td>商品多为实物交割，股指为现金交割；个人通常须在进入交割月前平仓</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <blockquote class="fact-quote">
+      <div class="source-badge">转述自：《期货和衍生品法》及交易所业务规则</div><br>
+      我国期货交易实行保证金制度、当日无负债结算制度（逐日盯市）、涨跌停板制度、持仓限额制度、强行平仓制度等一系列风险控制制度；期货交易所对会员和客户的持仓、保证金和风险状况实行集中监管。
+    </blockquote>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      期货是“双方都必须履行的合同”：没有权利金，只有保证金，盈亏每天结清，而且涨跌有封顶。
+    </div>
+
+    <!-- ===================== f2 ===================== -->
+    <h2 id="f2">二、市场地图：六家交易所和它们的品种</h2>
+
+    <p>国内的期货和衍生品分散在六家交易所里。记住“谁管什么”，就能很快判断一个品种属于哪条产业链、遵守哪家的规则。下表是大类概览，上市品种会增减，请以各交易所官网为准。</p>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>交易所</th><th>简称</th><th>主要品种（举例）</th></tr></thead>
+        <tbody>
+          <tr><td>上海期货交易所</td><td>上期所 SHFE</td><td>铜、铝、锌、镍等有色金属；黄金、白银；螺纹钢、热轧卷板；燃料油、沥青、天然橡胶、纸浆</td></tr>
+          <tr><td>上海国际能源交易中心</td><td>能源中心 INE（上期所子公司）</td><td>原油、20 号胶、低硫燃料油、国际铜、集运指数（欧线）</td></tr>
+          <tr><td>大连商品交易所</td><td>大商所 DCE</td><td>豆一、豆二、豆粕、豆油、棕榈油、玉米；铁矿石、焦煤、焦炭；聚乙烯、聚丙烯、PVC、乙二醇、苯乙烯、液化石油气；生猪、鸡蛋</td></tr>
+          <tr><td>郑州商品交易所</td><td>郑商所 ZCE</td><td>棉花、白糖、菜籽油、菜籽粕、苹果、红枣；PTA、甲醇、玻璃、纯碱、尿素、短纤</td></tr>
+          <tr><td>中国金融期货交易所</td><td>中金所 CFFEX</td><td>股指期货（IF、IH、IC、IM）、股指期权（IO、HO、MO）、国债期货</td></tr>
+          <tr><td>广州期货交易所</td><td>广期所 GFEX</td><td>工业硅、碳酸锂等新能源相关品种</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>品种代码是交易所给每个品种定的字母简称，例如 <strong>RB</strong> 是螺纹钢，<strong>CU</strong> 是铜，<strong>M</strong> 是豆粕，<strong>I</strong> 是铁矿石，<strong>IF</strong> 是沪深 300 股指期货。具体合约在代码后面再加年月，如 <strong>RB2605</strong> 表示 2026 年 5 月到期的螺纹钢合约。看到代码，先学会拆成“品种 + 到期年月”。</p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      金属能源在上海，农产品和黑色化工在大连郑州，股指和国债在中金所，新能源新品种在广州。
+    </div>
+
+    <!-- ===================== f3 ===================== -->
+    <h2 id="f3">三、一份期货合约：规格、报价与保证金</h2>
+
+    <h3>合约规格就是这份合同的“说明书”</h3>
+    <p>每个期货品种都有标准化的合约规格：<strong>交易单位</strong>（一手是多少吨或多少点）、<strong>报价单位</strong>（价格以什么计）、<strong>最小变动价位</strong>（一次最少跳多少）、<strong>合约月份</strong>、<strong>交易时间</strong>、<strong>涨跌停板</strong>、<strong>最后交易日</strong>、<strong>交割方式</strong>。下表只列几个常见品种的交易单位，供感受量级。</p>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>品种</th><th>交易所</th><th>交易单位（一手）</th><th>报价</th></tr></thead>
+        <tbody>
+          <tr><td>螺纹钢 RB</td><td>上期所</td><td>10 吨</td><td>元 / 吨</td></tr>
+          <tr><td>铜 CU</td><td>上期所</td><td>5 吨</td><td>元 / 吨</td></tr>
+          <tr><td>黄金 AU</td><td>上期所</td><td>1000 克</td><td>元 / 克</td></tr>
+          <tr><td>原油 SC</td><td>能源中心</td><td>1000 桶</td><td>元 / 桶</td></tr>
+          <tr><td>豆粕 M</td><td>大商所</td><td>10 吨</td><td>元 / 吨</td></tr>
+          <tr><td>铁矿石 I</td><td>大商所</td><td>100 吨</td><td>元 / 吨</td></tr>
+          <tr><td>沪深 300 股指 IF</td><td>中金所</td><td>每点 300 元</td><td>指数点</td></tr>
+          <tr><td>中证 1000 股指 IM</td><td>中金所</td><td>每点 200 元</td><td>指数点</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="figure-caption">合约规格曾有过调整，新合约也可能改变，上表是学习示例，下单前请核对交易所现行规格。</p>
+
+    <h3>合约价值与杠杆</h3>
+    <p><strong>合约价值 = 价格 × 交易单位</strong>。假设螺纹钢 3,500 元/吨，一手 10 吨，合约价值就是 3,500 × 10 = <strong>35,000 元</strong>。你不必拿出 35,000 元，只需缴纳一部分作为<strong>保证金</strong>。假设保证金率 10%，一手保证金是 3,500 元，杠杆约 10 倍（1 ÷ 10%）。</p>
+    <p>杠杆的双面性在这里一眼就能看清：价格涨跌 1%，合约价值变动 350 元，占你押的 3,500 元保证金的 <strong>10%</strong>。所以涨跌 10% 就是翻倍或亏光。</p>
+
+    <h3>保证金里有三层</h3>
+    <ul class="pillar-list">
+      <li><strong>交易所保证金</strong>：交易所规定的最低比例，会在节假日前、行情剧烈时上调。</li>
+      <li><strong>期货公司保证金</strong>：期货公司通常在交易所基础上再加几个百分点，实际按你的期货公司通知为准。</li>
+      <li><strong>账户权益与可用资金</strong>：权益 = 账户资金 + 持仓盈亏；可用资金 = 权益 − 已占用保证金。可用资金为负，就会收到追加保证金通知。</li>
+    </ul>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      期货一手的价值要用“价格 × 交易单位”算，杠杆就是它除以保证金；先算清一手值多少，再谈买几手。
+    </div>
+
+    <!-- ===================== f4 ===================== -->
+    <h2 id="f4">四、逐日盯市：一笔保证金账单怎么走到“追加保证金”</h2>
+
+    <p>期货最大的特点是<strong>每天收盘后，按当天的结算价把盈亏结清</strong>，赚的钱当天进账户，亏的钱当天扣账户。这叫“当日无负债结算”，俗称“逐日盯市”。它保证任何时候没有人欠着钱，但也意味着<strong>亏损会立刻消耗你的保证金，不用等到平仓</strong>。</p>
+
+    <h3>用一笔假设的账单走一遍</h3>
+    <p>假设：账户初始 5,000 元，螺纹钢买入 1 手（10 吨），买入价 3,500，保证金率 10%，每天按结算价重新计算保证金。价格连跌三天：</p>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>日期</th><th>结算价</th><th>当日盈亏</th><th>账户权益</th><th>占用保证金</th><th>可用资金</th></tr></thead>
+        <tbody>
+          <tr><td>第 0 天（开仓）</td><td>3,500</td><td>0</td><td>5,000</td><td>3,500</td><td>1,500</td></tr>
+          <tr><td>第 1 天</td><td>3,430</td><td>(3,430 − 3,500) × 10 = −700</td><td>4,300</td><td>3,430</td><td>870</td></tr>
+          <tr><td>第 2 天</td><td>3,360</td><td>(3,360 − 3,430) × 10 = −700</td><td>3,600</td><td>3,360</td><td>240</td></tr>
+          <tr><td>第 3 天</td><td>3,300</td><td>(3,300 − 3,360) × 10 = −600</td><td>3,000</td><td>3,300</td><td><strong>−300，被要求追加保证金</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>从 3,500 跌到 3,300，只跌了 5.7%，账户就已经出现缺口。如果收到追加保证金通知而没有在规定时间补足，期货公司可以<strong>强行平仓</strong>（俗称“爆仓”）。更极端时，价格连续涨跌停、无法平仓，亏损可能超过账户资金，穿仓部分仍要由你补足。</p>
+
+    <h3>试一试：逐日盯市模拟器</h3>
+    <p>改一改价格、保证金率和每天的结算价，看账户权益和可用资金怎么走。数字都是假设的，计算方式与上表一致。</p>
+
+    <div class="figure-box">
+      <div class="calc-controls">
+        <label>方向
+          <select id="m-dir"><option value="1">做多（买入）</option><option value="-1">做空（卖出）</option></select>
+        </label>
+        <label>手数
+          <input type="number" id="m-qty" value="1" min="1" step="1" />
+        </label>
+        <label>开仓价
+          <input type="number" id="m-open" value="3500" step="1" />
+        </label>
+        <label>交易单位（吨 / 点值）
+          <input type="number" id="m-mult" value="10" step="1" />
+        </label>
+        <label>保证金率（%）
+          <input type="number" id="m-mr" value="10" step="0.5" min="1" />
+        </label>
+        <label>账户初始资金
+          <input type="number" id="m-cash" value="5000" step="500" />
+        </label>
+        <label>第 1 天结算价
+          <input type="number" id="m-s1" value="3430" step="1" />
+        </label>
+        <label>第 2 天结算价
+          <input type="number" id="m-s2" value="3360" step="1" />
+        </label>
+        <label>第 3 天结算价
+          <input type="number" id="m-s3" value="3300" step="1" />
+        </label>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="m-table"></table>
+      </div>
+      <div class="calc-readout" id="m-readout"></div>
+    </div>
+    <div class="figure-caption">每天占用保证金 = 当日结算价 × 交易单位 × 手数 × 保证金率；当日盈亏 = 当日结算价与前一日结算价之差 × 交易单位 × 手数 × 方向。可用资金为负表示需要追加保证金。</div>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      期货的亏损是“当天扣、天天扣”，不是等到平仓才算；钱不够就会被追加保证金，再不够就被强平。
+    </div>
+
+    <!-- ===================== f5 ===================== -->
+    <h2 id="f5">五、基差、期限结构与主力合约：看懂价格的“形状”</h2>
+
+    <h3>基差：现货和期货之间的距离</h3>
+    <p><strong>基差 = 现货价格 − 期货价格</strong>（国内产业界的通行写法）。例如现货螺纹钢 3,520，期货 3,500，基差为 +20，说明现货比期货贵 20 元。临近交割时，期货价格会向现货价格收敛，这叫<strong>基差回归</strong>。基差是套保和期现套利的核心：</p>
+    <ul class="pillar-list">
+      <li><strong>期货升水</strong>（期货高于现货，基差为负）：市场愿意为未来多付钱，常见于库存充裕、持有成本高的品种。</li>
+      <li><strong>期货贴水</strong>（期货低于现货，基差为正）：现货偏紧或市场悲观，股指期货里也常见。</li>
+    </ul>
+
+    <h3>期限结构：近月和远月的价格“曲线”</h3>
+    <p>把同一品种不同到期月份的价格连成曲线，就是<strong>期限结构</strong>：</p>
+    <div class="ledger-grid">
+      <div class="ledger-card solution">
+        <div class="ledger-label">正向市场（Contango）</div>
+        <div class="ledger-num">远月价格 &gt; 近月价格</div>
+        <div class="ledger-desc">曲线向上翘。常反映持有成本（仓储、资金利息），库存充足的品种常见。</div>
+      </div>
+      <div class="ledger-card bureaucracy">
+        <div class="ledger-label">反向市场（Backwardation）</div>
+        <div class="ledger-num">远月价格 &lt; 近月价格</div>
+        <div class="ledger-desc">曲线向下弯。常反映现货紧张、近端供应不足，市场愿意为“现在就拿到货”付溢价。</div>
+      </div>
+    </div>
+
+    <p>近月和远月的价格差叫<strong>月差</strong>（跨期价差）。月差本身可以被交易，这就是<strong>跨期套利</strong>（第八节）。</p>
+
+    <h3>成交量、持仓量与主力合约</h3>
+    <ul class="pillar-list">
+      <li><strong>成交量</strong>：今天成交了多少手。国内行情软件里的成交量和持仓量通常是<strong>双边</strong>统计，数字看起来是一手的两倍，读数时要留意。</li>
+      <li><strong>持仓量</strong>：目前没有平仓的合约总数，反映资金累积的参与程度。</li>
+      <li><strong>主力合约</strong>：同一品种里持仓量（常常也是成交量）最大的那个月份。流动性集中在主力合约，远月、近月常常很“瘦”。</li>
+      <li><strong>移仓换月</strong>：主力合约临近交割时，资金会陆续迁移到下一个月份，主力随之更换。持仓者要主动把仓位从旧合约搬到新合约，搬的过程叫“移仓”。换月期间，两个合约都可能不够“胖”，买卖价差变宽，需要特别小心。</li>
+    </ul>
+
+    <p>因为不同月份的价格不同，一条“连续合约”K 线在换月处可能有一个价格跳空，那不是真的涨跌，是月份切换造成的。看长期图表时，要分清是“主力连续”还是“指数连续”。</p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      基差是现货与期货的距离，期限结构是不同月份的价格曲线，主力合约是流动性集中的那个月；换月时这三样都在变化。
+    </div>
+
+    <!-- ===================== f6 ===================== -->
+    <h2 id="f6">六、交易制度：涨跌停、持仓限额、交割与强平</h2>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>制度</th><th>是什么</th><th>对你的影响</th></tr></thead>
+        <tbody>
+          <tr><td>涨跌停板</td><td>交易所规定每个品种单日价格波动的上下限，相对于上一日结算价</td><td>价格封死在涨停或跌停时，对手盘消失，<strong>你可能无法平仓</strong>，亏损可能继续累积到下一天</td></tr>
+          <tr><td>持仓限额</td><td>限制单个客户或会员在某品种上的最大持仓手数，临近交割时更严</td><td>想做大仓位会被限制；交割月限额收紧，常常迫使持仓者提前移仓</td></tr>
+          <tr><td>保证金调整</td><td>交易所在节假日、连续涨跌或风险上升时上调保证金</td><td>即使价格没有动，占用保证金变多，也可能触发追保</td></tr>
+          <tr><td>强行平仓</td><td>保证金不足且未按时补足时，期货公司可强制平仓</td><td>被强平的价格可能很差，由你承担全部后果</td></tr>
+          <tr><td>交割</td><td>合约到期，按规则实物交割或现金结算</td><td>商品合约进入交割月后，个人客户通常不能持仓，必须提前平仓或移仓</td></tr>
+          <tr><td>夜盘</td><td>部分品种在晚上开放交易</td><td>可以对外盘行情提前反应，也意味着风险时间更长；股指期货没有夜盘</td></tr>
+          <tr><td>手续费</td><td>按成交金额的万分之几，或每手固定金额收取；部分品种平今仓更贵</td><td>高频进出的成本明显，需要把手续费算进盈亏平衡点</td></tr>
+          <tr><td>投资者适当性与实名制</td><td>开户需通过知识测试等；账户实名并接受穿透式监管</td><td>股指期货等品种设有资金与知识门槛，不是人人能开</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>关于“封死涨跌停”要记住的</h3>
+    <p>涨停时没人愿意卖给你，跌停时没人愿意买你的单。如果你做多，遇到连续跌停，意味着<strong>多日无法平仓</strong>，而每天的逐日盯市亏损会继续扣你的账户。这和期权买方“最大亏损是权利金”完全不同，是期货最让新手措手不及的地方之一。</p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      涨跌停可能让你“想走走不掉”，限额和保证金会在你没准备时变，进入交割月前必须主动搬家。
+    </div>
+
+    <!-- ===================== f7 ===================== -->
+    <h2 id="f7">七、股指期货专章：IF、IH、IC、IM</h2>
+
+    <h3>四个品种，对应四条指数</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>代码</th><th>标的指数</th><th>每点价值</th><th>风格</th></tr></thead>
+        <tbody>
+          <tr><td>IH</td><td>上证 50</td><td>300 元</td><td>超大盘、蓝筹</td></tr>
+          <tr><td>IF</td><td>沪深 300</td><td>300 元</td><td>大盘、全市场代表</td></tr>
+          <tr><td>IC</td><td>中证 500</td><td>200 元</td><td>中盘</td></tr>
+          <tr><td>IM</td><td>中证 1000</td><td>200 元</td><td>中小盘</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>规则要点（转述自中金所公开规则，数字以现行公告为准）：</p>
+    <ul class="pillar-list">
+      <li><strong>现金交割</strong>：到期不交收任何股票，按到期日的结算价和你的成本价算差额，用现金结清。</li>
+      <li><strong>合约月份</strong>：通常挂牌当月、下月和随后两个季月，共四个合约。</li>
+      <li><strong>最后交易日</strong>：合约到期月份的第三个星期五，遇法定节假日顺延。</li>
+      <li><strong>交易时间</strong>：与 A 股相近，没有夜盘。</li>
+      <li><strong>涨跌停板与保证金</strong>：设有涨跌停板，保证金比例由交易所确定并会调整。</li>
+      <li><strong>投资者适当性</strong>：设有资金与知识门槛，规则与历史上多次调整有关，请以现行规定为准。</li>
+    </ul>
+
+    <h3>合约价值</h3>
+    <p>假设沪深 300 指数 4,000 点，IF 每点 300 元：一手合约价值 = 4,000 × 300 = <strong>1,200,000 元</strong>。若保证金率 10%，一手约押 120,000 元。指数涨跌 1%（40 点），盈亏 = 40 × 300 = <strong>12,000 元</strong>，占保证金的 10%。</p>
+
+    <h3>基差：股指期货的“灵魂”</h3>
+    <p>股指期货的基差 = 指数点位 − 期货价格（或反过来，各家写法不同，关键是分清升贴水）。国内股指期货经常出现<strong>贴水</strong>，也就是期货比指数低，尤其是中小盘的 IC、IM，贴水幅度有时很大。贴水并不是“期货便宜得到了好处”，而是市场对未来的预期、对冲需求和融券受限等多种因素的综合结果。</p>
+    <p>关键规律：<strong>现金交割保证到期时期货价格等于指数</strong>，所以贴水会随时间逐渐消失（基差回归）。</p>
+    <ul class="pillar-list">
+      <li><strong>做空期货对冲股票的人</strong>：期货贴水收敛时，空头会亏掉这段贴水，这是对冲的成本。</li>
+      <li><strong>做多期货替代买指数的人</strong>：贴水收敛是额外收益，但也要承担展期时的价差波动。</li>
+    </ul>
+    <p>把贴水折成年化，才能和别的收益率比较：</p>
+    <div class="plain-box">
+      年化贴水率 ≈ （指数 − 期货）÷ 指数 × （365 ÷ 距到期天数）
+    </div>
+    <p>例如指数 4,000，期货 3,960，距到期 60 天：贴水 = 40 点，占 1%，年化约 1% × 365 ÷ 60 ≈ <strong>6.1%</strong>。</p>
+
+    <h3>用股指期货对冲股票组合</h3>
+    <p>要对冲掉一个股票组合的大盘风险，需要卖出的期货手数约为：</p>
+    <div class="plain-box">
+      对冲手数 ≈ 组合市值 × Beta ÷ （指数点位 × 每点价值）
+    </div>
+    <p>例如组合市值 1,200,000 元，相对沪深 300 的 Beta 约为 1，指数 4,000，IF 每点 300 元：手数 ≈ 1,200,000 × 1 ÷ 1,200,000 = <strong>1 手</strong>。如果组合是小盘股、相对中证 1000 的跟踪误差小，用 IM 更贴合。选错指数会出现“股票跌了，期货却没赚到”的<strong>基差风险与跟踪误差</strong>。</p>
+
+    <h3>试一试：股指期货贴水与套保计算器</h3>
+    <div class="figure-box">
+      <div class="calc-controls">
+        <label>合约
+          <select id="i-contract">
+            <option value="300">IF / IH（每点 300 元）</option>
+            <option value="200">IC / IM（每点 200 元）</option>
+          </select>
+        </label>
+        <label>指数点位
+          <input type="number" id="i-spot" value="4000" step="10" />
+        </label>
+        <label>期货价格
+          <input type="number" id="i-fut" value="3960" step="10" />
+        </label>
+        <label>距到期天数
+          <input type="number" id="i-days" value="60" step="1" min="1" />
+        </label>
+        <label>股票组合市值（元）
+          <input type="number" id="i-pv" value="1200000" step="50000" />
+        </label>
+        <label>组合 Beta（相对该指数）
+          <input type="number" id="i-beta" value="1" step="0.05" />
+        </label>
+      </div>
+      <div class="calc-readout" id="i-readout"></div>
+    </div>
+    <div class="figure-caption">数字为假设。对冲手数取最接近的整数；实际中还要考虑保证金占用、基差变化与展期成本。</div>
+
+    <h3>展期：期货“活不到永远”</h3>
+    <p>期货总要到期，想长期保持对冲，就要定期把快到期的合约平掉、开下一个月份的合约，这叫<strong>展期</strong>。展期的成本就是两个月份之间的价差：如果远月比近月贴水得更深，每次展期你都要多吃一点“贴水”。股指期货的长期对冲成本，很大程度上就是这些展期成本的累积。</p>
+
+    <h3>股指期权 IO、HO、MO</h3>
+    <p>中金所还有以沪深 300、上证 50、中证 1000 为标的的<strong>股指期权</strong>，一般为欧式、现金交割。它们就是第一本手册里的期权，只是标的换成指数，合约乘数为每点 100 元（以现行规则为准）。第一本手册的所有知识，包括希腊字母、波动率、价差和纺锤体，在这里全部适用。</p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      股指期货是“现金交割的指数合同”：基差会向零收敛，套保要算手数，展期有成本，贴水年化后才好比较。
+    </div>
+
+    <!-- ===================== f8 ===================== -->
+    <h2 id="f8">八、商品期货专章：产业链、套保与套利</h2>
+
+    <h3>商品期货的价格由什么决定</h3>
+    <p>股指期货盯的是一个指数，商品期货盯的是<strong>一条产业链的供需</strong>。读商品要先画“产业链地图”，知道上游、中游、下游，以及每一环的成本、库存和利润：</p>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>产业链</th><th>主要期货品种（上游 → 下游）</th><th>价格主要看什么</th></tr></thead>
+        <tbody>
+          <tr><td>黑色系</td><td>铁矿石、焦煤、焦炭 → 螺纹钢、热轧卷板</td><td>钢厂利润、库存、基建与地产需求、环保限产</td></tr>
+          <tr><td>油脂油料</td><td>大豆 → 豆粕、豆油（棕榈油、菜油相关）</td><td>压榨利润、进口大豆、天气、生猪存栏</td></tr>
+          <tr><td>能源化工</td><td>原油 → PTA、乙二醇、甲醇、塑料等</td><td>原油价格、装置开工率、下游需求</td></tr>
+          <tr><td>有色金属</td><td>铜、铝、锌、镍等</td><td>库存、宏观需求、美元与利率、矿山供应</td></tr>
+          <tr><td>贵金属</td><td>黄金、白银</td><td>实际利率、美元、避险情绪</td></tr>
+          <tr><td>农产品</td><td>玉米、棉花、白糖、苹果、生猪等</td><td>天气、收储政策、季节性、存栏周期</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>三种参与者，三种目的</h3>
+    <ul class="pillar-list">
+      <li><strong>套期保值（套保）</strong>：产业客户用期货对冲现货价格风险。卖出套保：库存者怕价格下跌，先在期货上卖出锁定价格；买入套保：采购者怕价格上涨，先在期货上买入锁定成本。</li>
+      <li><strong>套利</strong>：利用价格之间的“不合理差距”获取相对稳定的收益，风险比单边小，但不是无风险。</li>
+      <li><strong>投机</strong>：承担价格风险以博取价差收益，为市场提供流动性。</li>
+    </ul>
+
+    <h3>套保的一个小例子</h3>
+    <p>某钢材贸易商手里有 100 吨螺纹钢现货，现价 3,520，担心下个月跌价。他卖出 10 手螺纹钢期货（10 手 × 10 吨 = 100 吨），价格 3,500。一个月后现货跌到 3,300，期货跌到 3,290：现货亏 (3,520 − 3,300) × 100 = 22,000 元，期货赚 (3,500 − 3,290) × 100 = 21,000 元，净亏 1,000 元，几乎抵消了下跌，差额就是基差变化。套保的目的不是赚钱，是<strong>把价格风险换成基差风险</strong>。</p>
+
+    <h3>三类套利</h3>
+    <ul class="pillar-list">
+      <li><strong>期现套利</strong>：期货与现货的价差超过持有成本时，买现货卖期货（或相反），持有到交割收敛。</li>
+      <li><strong>跨期套利</strong>：同一品种，买近月卖远月或相反，赚月差变化。需要两个月份都有足够流动性，这一点和后面的纺锤体直接相关。</li>
+      <li><strong>跨品种套利</strong>：相关品种之间的比价，例如大豆与豆粕、豆油（压榨利润），螺纹钢与铁矿石、焦炭（钢厂利润）。要求你真正理解产业链，而不只是看价格图。</li>
+    </ul>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      商品期货要先读懂产业链；套保是转移风险，套利是赚价差，投机是承担风险；每一种都需要你知道自己站在哪一方。
+    </div>
+
+    <!-- ===================== f9 ===================== -->
+    <h2 id="f9">九、期货期权：把第一本手册接上来</h2>
+
+    <p>国内也有大量<strong>商品期货期权</strong>（如铜、豆粕、白糖等）和上面提到的股指期权。商品期权的标的是<strong>对应的期货合约</strong>，不是现货。这带来几点和第一本手册不同的地方：</p>
+    <ul class="pillar-list">
+      <li><strong>行权结果是期货头寸</strong>：行权后你得到的是一手期货合约，而不是现货，然后进入逐日盯市。</li>
+      <li><strong>到期日与标的期货的月份挂钩</strong>：期权通常在标的期货到期前一两个月到期，具体以交易所规则为准。</li>
+      <li><strong>多数商品期权为美式</strong>：可提前行权，要特别留意被指派的风险。股指期权为欧式，现金交割。</li>
+      <li><strong>保证金与限额</strong>：卖方同样要交保证金，也受持仓限额约束。</li>
+    </ul>
+    <p>所以：<span class="highlight-ink">期货是“线性”的（价格涨 1，盈亏就涨 1），期权是“非线性”的（有 Delta、Gamma、Vega）。</span>用期货做方向，用期权做保险或收租，是产业客户和量化机构常见的搭配。第一本手册里的价差、希腊字母、IV、流动性和纺锤体，在期货期权上同样有用。</p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      期货期权的标的是期货：行权得到的是期货头寸，期权的所有知识照用，只是多了一层逐日盯市。
+    </div>
+
+    <!-- ===================== f10 ===================== -->
+    <h2 id="f10">十、作者构思延伸：期货版纺锤体</h2>
+
+    <div class="epistemic-box">
+      <strong>【本节性质】</strong>第一本手册里的“双纺锤体与焦距扩散”是作者已经写成规格的构思。<strong>本节是在这套框架上向期货市场延伸的推演</strong>：它还没有规格书，没有代码，没有任何参数校准。下面的读法与对照是“如果要把纺锤体用到期货上，应该怎么对应”，请当作思路，而不是已验证的工具。
+    </div>
+
+    <h3>先回忆：期权纺锤体的结构</h3>
+    <p>期权纺锤体里，<strong>横轴是行权价</strong>，一个到期日画一片；<strong>胖瘦是流动性</strong>，<strong>颜色是情绪热度（IV）</strong>；虚线是标准纺锤体，实体与虚线之间的差距叫偏差；你最多选 3 个焦点；开仓前做价差体检。</p>
+
+    <h3>第一种延伸：纺锤体直接用在国内期权上</h3>
+    <p>股指期权（IO / HO / MO）和商品期货期权，与美股期权一样有期权链，纺锤体<strong>原样适用</strong>，只需要注意三处不同：</p>
+    <ul class="pillar-list">
+      <li><strong>标的月份要跟着主力走</strong>：商品期权的流动性集中在主力合约对应的期权上，其他月份的纺锤体往往整体偏瘦，不要拿主力的“胖”去比远月。</li>
+      <li><strong>有涨跌停</strong>：标的封死涨跌停时，期权纺锤体的买卖价差会瞬间变宽，“胖”会突然变“瘦”。这属于需要单独提示的状态。</li>
+      <li><strong>欧式与美式不同</strong>：股指期权是欧式，不存在提前指派，价差体检里可以去掉这一类风险提示。</li>
+    </ul>
+
+    <h3>第二种延伸：给期货本身画一个“月份纺锤体”</h3>
+    <p>期货没有行权价，却有<strong>月份</strong>。把“行权价”换成“合约月份”，纺锤体的所有概念就能一一对应：</p>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>纺锤体概念</th><th>期权版（已有构思）</th><th>期货版（本节设想）</th></tr></thead>
+        <tbody>
+          <tr><td>横轴</td><td>行权价（一片 = 一个到期日）</td><td>合约月份，从近到远</td></tr>
+          <tr><td>胖瘦</td><td>流动性得分（买卖价差为主，持仓量为辅）</td><td>流动性得分（买卖价差为主，成交量与持仓量为辅）</td></tr>
+          <tr><td>颜色</td><td>情绪热度（IV Rank、偏斜等）</td><td>期限结构温度：该月份相对现货的升贴水，在其自身历史分位上的位置；越红越“升水”，越蓝越“贴水”</td></tr>
+          <tr><td>标准纺锤体（虚线）</td><td>各行权价“理应有”的流动性</td><td>各月份“理应有”的流动性：以主力合约为峰，向近月与远月平滑衰减</td></tr>
+          <tr><td>偏差</td><td>现实 − 标准</td><td>现实 − 标准：某个月份比应有的更瘦，说明在那个月份进出会更难</td></tr>
+          <tr><td>焦点（最多 3 个）</td><td>价差的两条腿加一个对比位置</td><td>主力合约、次主力合约，加一个你的对冲腿或套利腿</td></tr>
+          <tr><td>焦距扩散</td><td>不同到期日距到期的远近</td><td>主力合约的“焦距”会随时间向后移：近月临近交割时变小变瘦，远月逐渐变胖，换月就是焦点的移动</td></tr>
+          <tr><td>价差体检</td><td>卖腿热度、流动性、持仓量陷阱</td><td>跨期套利与展期的体检：两个月份流动性是否都足够、月差是否处于极端分位、是否即将进入交割月</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>先看一张示意图</h3>
+    <p>下面这张图假设某商品期货有 8 个月份，近到远排开。拖动“换月进度”滑块，观察主力合约从“次月”向“第 3 月”迁移的过程（当月已临近交割，本来就偏瘦）。选择“期限结构”可以切换颜色：升水的曲线偏红，贴水的曲线偏蓝。<strong>所有形状均为讲解而生成的假设，不是任何真实行情。</strong></p>
+
+    <div class="figure-box">
+      <div class="calc-controls">
+        <label>换月进度：<span id="sp-p-label">0</span>%
+          <input type="range" id="sp-p" min="0" max="100" step="1" value="0" />
+        </label>
+        <label>期限结构
+          <select id="sp-curve">
+            <option value="c">正向市场（远月升水，偏红）</option>
+            <option value="b">反向市场（近月强，近月偏红）</option>
+            <option value="d">深度贴水（整体偏蓝，类似部分股指期货）</option>
+          </select>
+        </label>
+      </div>
+      <svg id="fs-svg" viewBox="0 0 640 300" role="img" aria-label="期货月份纺锤体示意图（假设数据）"></svg>
+      <div class="calc-readout" id="sp-readout"></div>
+    </div>
+    <div class="figure-caption">实体的高度表示各月份的流动性（越胖越好成交），颜色表示期限结构温度（越红越升水，越蓝越贴水），虚线是“标准纺锤体”：主力合约处最胖，向两侧平滑变瘦。数字是为演示而设的。</div>
+
+    <h3>从这张图你能读出什么</h3>
+    <ul class="pillar-list">
+      <li><strong>换月进度 0%</strong>：次月（主力）最胖，现实与标准吻合。这时做跨期价差，两条腿落在“次月与第 3 月”，主力腿很胖，第 3 月略瘦，进出成本可以接受。</li>
+      <li><strong>换月进度 50% 前后</strong>：流动性被切成两半，两个月份都比标准纺锤体更瘦，偏差为负。这正是<strong>换月期间买卖价差变宽、滑点变大</strong>的写照：此时开跨期价差的两条腿，进出成本最高。</li>
+      <li><strong>换月进度 100%</strong>：流动性基本搬到了第 3 月。旧的主力（次月）已经变瘦、也更接近交割，如果你还持有它，要尽快移仓，别拖到交割月。</li>
+      <li><strong>颜色的故事</strong>：正向市场里远月偏红，说明市场为远月支付了持有成本溢价；反向市场里近月偏红，说明现货紧张；深度贴水时整条曲线偏蓝，这与国内部分股指期货的常见状态相呼应，意味着每一次展期都要“多吃一口贴水”。</li>
+    </ul>
+
+    <h3>期货版价差体检会检查什么（设想）</h3>
+    <ol class="step-list">
+      <li><strong>两个月份的流动性都够吗？</strong>任何一条腿的流动性得分偏低，就提示“进出成本偏高”。</li>
+      <li><strong>是否处在换月窗口？</strong>当标准与现实的偏差为负、且主力正在迁移时，提示“换月期间价差单更难成交”。</li>
+      <li><strong>是否临近交割月？</strong>个人客户通常不能持仓进入交割月，需要提前移仓，这条提示应当随距离交割的天数逐步升级。</li>
+      <li><strong>月差是否处于极端分位？</strong>相对历史分布极端的月差，既可能是机会，也可能是“事出有因”（如交割品级、政策），需要人工核对，而不是机械地认定它会回归。</li>
+      <li><strong>是否处于涨跌停附近？</strong>封死时报价失真，体检应当提示“暂时不可靠”。</li>
+      <li><strong>对冲场景：基差和展期成本</strong>。对股指期货对冲，应显示年化贴水与下一次展期的月差成本，让你知道“这个对冲每年大约要付多少钱”。</li>
+    </ol>
+
+    <h3>这个延伸的价值，和它的边界</h3>
+    <div class="ledger-grid">
+      <div class="ledger-card solution">
+        <div class="ledger-label">可能的价值</div>
+        <div class="ledger-num">把“月份曲线”变成一眼能读的形状</div>
+        <div class="ledger-desc">期货交易者要同时看月份曲线、持仓分布、月差和基差，信息分散在好几个界面。纺锤体用胖瘦和颜色把它们压到一张图里，尤其适合发现换月窗口和展期成本。</div>
+      </div>
+      <div class="ledger-card bureaucracy">
+        <div class="ledger-label">需要诚实面对的边界</div>
+        <div class="ledger-num">没有数据、没有校准、没有验证</div>
+        <div class="ledger-desc">这只是概念对应。流动性得分怎么加权、颜色用什么历史窗口、换月窗口怎么判定，都没有定义，更没有在真实行情上测试。现在它不是工具，是一个值得被检验的想法。</div>
+      </div>
+    </div>
+
+    <p>读完这一节，即使没有任何软件，你也可以手动做同样的事：把一个品种的各月份<strong>买卖价差、成交量、持仓量</strong>摆在一张表里，找出“胖”的月份；把各月份价格相对现货的升贴水摆在一起，找出曲线的形状；再问一句：<em>我的两条腿，是不是都落在“胖”的位置上？</em>这就是纺锤体思维的本质。</p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      期货版纺锤体是把“行权价”换成“月份”：胖瘦看流动性，颜色看升贴水，虚线是应有的形状；换月和临近交割，就是焦点在移动；目前只是设想，还没被检验。
+    </div>
+
+    <!-- ===================== f11 ===================== -->
+    <h2 id="f11">十一、实操：从开户前到平仓的完整流程</h2>
+
+    <h3>开仓前的十个问题</h3>
+    <ul class="checklist">
+      <li><strong>我清楚这手合约值多少钱吗？</strong>价格 × 交易单位 × 手数，占账户的比例。</li>
+      <li><strong>最坏情况下我能亏多少？</strong>涨跌停连续两三天也扛得住吗？</li>
+      <li><strong>保证金够不够缓冲？</strong>账户里只放刚好够的保证金，是爆仓的主要原因。</li>
+      <li><strong>我交易的月份是主力吗？</strong>非主力月份的买卖价差常常很宽。</li>
+      <li><strong>离交割月还有多远？</strong>个人客户通常需在进入交割月前平仓或移仓。</li>
+      <li><strong>当下的基差与期限结构是什么形状？</strong>是升水还是贴水，我是否在为“持有成本”付费？</li>
+      <li><strong>手续费和平今仓成本算进去了吗？</strong>特别是日内多次交易。</li>
+      <li><strong>近期有没有保证金调整、节假日、重大公告？</strong>长假前的保证金上调和跳空是常见风险。</li>
+      <li><strong>我的止损怎么设？</strong>涨跌停封死时止损单可能成交不了，有没有备用方案？</li>
+      <li><strong>我为什么要做这一笔？</strong>是套保、套利还是投机，我清楚自己的角色吗？</li>
+    </ul>
+
+    <h3>操作步骤</h3>
+    <ol class="step-list">
+      <li><strong>了解规则与开户</strong>：通过期货公司开立期货账户，完成风险揭示与知识测试；先看一遍交易所对该品种的合约规格与风险提示。</li>
+      <li><strong>先用模拟盘</strong>：熟悉逐日盯市、涨跌停与强平，不要用真钱试规则。</li>
+      <li><strong>选品种与月份</strong>：优先选择主力合约，查看买卖价差与成交量。</li>
+      <li><strong>算清一手的价值与保证金</strong>：用第四节的模拟器代入你的数字。</li>
+      <li><strong>用限价单</strong>：流动性不好的月份尤其不要用市价。</li>
+      <li><strong>每天看结算单</strong>：核对盈亏、保证金占用、可用资金和风险度。</li>
+      <li><strong>提前规划移仓</strong>：主力合约临近交割前，提前一两周评估移仓成本与时机。</li>
+    </ol>
+
+    <h3>新手最常犯的六个错误</h3>
+    <ol class="step-list">
+      <li>只看“保证金不多”，不算合约价值，仓位越开越满。</li>
+      <li>忘了逐日盯市，把“账面浮亏”当作“还没亏”。</li>
+      <li>在非主力月份交易，买卖价差吃掉大半利润。</li>
+      <li>拖到交割月才想起来要平仓。</li>
+      <li>用股指期货对冲却不算基差和展期成本，把“对冲”当成“零成本保险”。</li>
+      <li>忽视涨跌停：以为任何时候都能止损。</li>
+    </ol>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      期货的纪律是：先算一手值多少，再算最坏亏多少，保证金永远留缓冲，进入交割月之前主动搬家。
+    </div>
+
+    <!-- ===================== 术语表 ===================== -->
+    <h2 id="glossary">十二、术语表：一百个名词的白话解释</h2>
+
+    <p>在下面的框里搜索，也可以直接往下读。每个词用一两句白话解释，并标出它出现的章节。</p>
+
+    <input type="search" id="glossary-search" placeholder="搜索术语，例如：基差、主力合约、保证金、纺锤体……" aria-label="搜索术语" />
+    <p id="glossary-empty">没有找到匹配的术语，试试别的关键词。</p>
+
+    <dl class="glossary" id="glossary-list">
+      <div class="glossary-group">一、市场与机构</div>
+
+      <dt>期货<span class="en">Futures</span></dt>
+      <dd>约定在未来某一日期，按约定价格买卖标的的标准化合同，双方都有义务履行。（第一节）</dd>
+
+      <dt>商品期货<span class="en">Commodity Futures</span></dt>
+      <dd>标的是实物商品（金属、能源、农产品、化工品等）的期货。（第八节）</dd>
+
+      <dt>股指期货<span class="en">Stock Index Futures</span></dt>
+      <dd>标的是股票指数的期货，现金交割。（第七节）</dd>
+
+      <dt>国债期货<span class="en">Treasury Bond Futures</span></dt>
+      <dd>标的是国债的期货，由中金所上市，主要用于利率风险管理。（第二节）</dd>
+
+      <dt>上期所<span class="en">SHFE</span></dt>
+      <dd>上海期货交易所，主要品种有铜、铝、锌、黄金、白银、螺纹钢、橡胶等。（第二节）</dd>
+
+      <dt>能源中心<span class="en">INE</span></dt>
+      <dd>上海国际能源交易中心，上期所的子公司，原油、20 号胶、低硫燃料油、国际铜等在这里。（第二节）</dd>
+
+      <dt>大商所<span class="en">DCE</span></dt>
+      <dd>大连商品交易所，豆类、油脂、铁矿石、焦煤焦炭、塑料化工、生猪等。（第二节）</dd>
+
+      <dt>郑商所<span class="en">ZCE</span></dt>
+      <dd>郑州商品交易所，棉花、白糖、菜籽油粕、PTA、甲醇、玻璃、纯碱等。（第二节）</dd>
+
+      <dt>中金所<span class="en">CFFEX</span></dt>
+      <dd>中国金融期货交易所，股指期货、股指期权、国债期货。（第二节）</dd>
+
+      <dt>广期所<span class="en">GFEX</span></dt>
+      <dd>广州期货交易所，工业硅、碳酸锂等新能源品种。（第二节）</dd>
+
+      <dt>中国证监会<span class="en">CSRC</span></dt>
+      <dd>中国证券监督管理委员会，期货市场的监管机构。（第一节）</dd>
+
+      <dt>期货公司<span class="en">FCM / Futures Company</span></dt>
+      <dd>代理客户参与期货交易的中介机构，你的账户开在期货公司，保证金通常存管在期货公司。（第三节）</dd>
+
+      <dt>结算会员 / 非结算会员<span class="en">Clearing Member</span></dt>
+      <dd>交易所的会员分类，客户通过期货公司（会员）间接参与交易。（第六节）</dd>
+
+      <dt>适当性管理<span class="en">Suitability</span></dt>
+      <dd>要求投资者具备相应资金、知识与经验才能参与特定品种，例如股指期货。（第六节）</dd>
+
+      <dt>穿透式监管<span class="en">Look-through Supervision</span></dt>
+      <dd>监管可以穿透中间层看到最终客户的账户与交易信息。（第六节）</dd>
+
+      <dt>期货和衍生品法<span class="en">Futures and Derivatives Law</span></dt>
+      <dd>规范期货和衍生品交易的基础法律，自 2022 年 8 月 1 日起施行。（第一节）</dd>
+
+      <div class="glossary-group">二、合约与价格</div>
+
+      <dt>合约规格<span class="en">Contract Specification</span></dt>
+      <dd>交易所为每个品种规定的交易单位、报价单位、最小变动价位、合约月份、交易时间、涨跌停、最后交易日与交割方式。（第三节）</dd>
+
+      <dt>交易单位<span class="en">Contract Size</span></dt>
+      <dd>一手合约对应的数量，如螺纹钢 10 吨、IF 每点 300 元。（第三节）</dd>
+
+      <dt>报价单位<span class="en">Quotation Unit</span></dt>
+      <dd>价格用什么单位报，如元 / 吨、指数点。（第三节）</dd>
+
+      <dt>最小变动价位<span class="en">Tick Size</span></dt>
+      <dd>价格一次最少能变动的幅度，决定了买卖价差的最小宽度。（第三节）</dd>
+
+      <dt>品种代码<span class="en">Product Code</span></dt>
+      <dd>交易所为品种设的字母简称，如 RB、CU、M、IF。（第二节）</dd>
+
+      <dt>合约代码<span class="en">Contract Code</span></dt>
+      <dd>品种代码加到期年月，如 RB2605 表示 2026 年 5 月到期的螺纹钢合约。（第二节）</dd>
+
+      <dt>合约价值<span class="en">Notional Value</span></dt>
+      <dd>价格乘以交易单位，一手合约所代表的总价值。（第三节）</dd>
+
+      <dt>近月 / 远月<span class="en">Near / Far Month</span></dt>
+      <dd>离到期近的月份叫近月，离到期远的叫远月。（第五节）</dd>
+
+      <dt>主力合约<span class="en">Main / Dominant Contract</span></dt>
+      <dd>同一品种里持仓量（通常成交量也）最大的月份，流动性最集中。（第五节）</dd>
+
+      <dt>次主力合约<span class="en">Sub-Dominant Contract</span></dt>
+      <dd>仅次于主力的月份，常是换月时资金迁移的目的地。（第十节）</dd>
+
+      <dt>主力连续 / 指数连续<span class="en">Continuous Contract</span></dt>
+      <dd>把不同月份的主力合约接成一条长期曲线，换月处可能有价格跳空，那不是真正的涨跌。（第五节）</dd>
+
+      <dt>结算价<span class="en">Settlement Price</span></dt>
+      <dd>交易所每天为逐日盯市而计算的价格，通常是当日成交价格的加权平均，用来算当日盈亏和保证金。（第四节）</dd>
+
+      <dt>收盘价 / 昨结算<span class="en">Close / Previous Settlement</span></dt>
+      <dd>收盘价是最后的成交价；昨结算是上一日结算价，涨跌停以它为基准。（第四、六节）</dd>
+
+      <dt>成交量<span class="en">Volume</span></dt>
+      <dd>当日成交的手数，国内常以双边计。（第五节）</dd>
+
+      <dt>持仓量<span class="en">Open Interest</span></dt>
+      <dd>尚未平仓的合约数量，反映资金的累积参与度，国内常以双边计。（第五节）</dd>
+
+      <dt>多头 / 空头<span class="en">Long / Short</span></dt>
+      <dd>买入持仓叫多头，卖出持仓叫空头。期货做空和做多一样方便。（第一节）</dd>
+
+      <dt>开仓 / 平仓 / 平今<span class="en">Open / Close / Close Today</span></dt>
+      <dd>开仓是新建仓位，平仓是了结已有仓位；平今仓是平掉当天刚开的仓，部分品种手续费更高。（第六节）</dd>
+
+      <dt>跳空<span class="en">Gap</span></dt>
+      <dd>相邻两个交易时段的价格之间有空白，常发生在长假或重大消息之后。（第十一节）</dd>
+
+      <div class="glossary-group">三、保证金与账户</div>
+
+      <dt>保证金<span class="en">Margin</span></dt>
+      <dd>为履约而缴纳的担保资金，按合约价值的一定比例收取，不是合约的价格。（第三节）</dd>
+
+      <dt>保证金率<span class="en">Margin Ratio</span></dt>
+      <dd>保证金占合约价值的比例，由交易所规定最低值，期货公司常再上浮。（第三节）</dd>
+
+      <dt>杠杆<span class="en">Leverage</span></dt>
+      <dd>合约价值与保证金之比，保证金率 10% 时约 10 倍。（第三节）</dd>
+
+      <dt>账户权益<span class="en">Equity</span></dt>
+      <dd>账户资金加持仓盈亏，是你账户的实际价值。（第三节）</dd>
+
+      <dt>可用资金<span class="en">Available Funds</span></dt>
+      <dd>权益减占用保证金，可用资金为负时需要追加保证金。（第三节）</dd>
+
+      <dt>风险度<span class="en">Risk Ratio</span></dt>
+      <dd>占用保证金占权益的比例，越接近 100% 越危险。（第四节）</dd>
+
+      <dt>逐日盯市<span class="en">Mark to Market</span></dt>
+      <dd>每个交易日收盘后按结算价结清盈亏，也叫当日无负债结算。（第四节）</dd>
+
+      <dt>追加保证金<span class="en">Margin Call</span></dt>
+      <dd>可用资金不足时，期货公司通知你限时补足保证金。（第四节）</dd>
+
+      <dt>强行平仓<span class="en">Forced Liquidation</span></dt>
+      <dd>追保未补足或违规时，期货公司强制平掉你的仓位，俗称“爆仓”。（第四节）</dd>
+
+      <dt>穿仓<span class="en">Negative Equity</span></dt>
+      <dd>亏损超过账户全部资金，出现负权益，缺口仍要由客户补足。（第四节）</dd>
+
+      <dt>手续费<span class="en">Commission</span></dt>
+      <dd>交易时交给期货公司和交易所的费用，按成交金额比例或每手固定金额收取。（第六节）</dd>
+
+      <dt>滑点<span class="en">Slippage</span></dt>
+      <dd>预期成交价与实际成交价的差距，流动性差的月份尤其明显。（第十节）</dd>
+
+      <dt>买卖价差<span class="en">Bid-Ask Spread</span></dt>
+      <dd>买一价与卖一价之间的距离，是进出场的隐形成本。（第十节）</dd>
+
+      <dt>限价单 / 市价单<span class="en">Limit / Market Order</span></dt>
+      <dd>限价单指定价格，市价单不管价格立即成交；流动性差时避免市价单。（第十一节）</dd>
+
+      <div class="glossary-group">四、基差与期限结构</div>
+
+      <dt>基差<span class="en">Basis</span></dt>
+      <dd>现货价格减期货价格（产业界常见写法），反映现货与期货的距离。（第五节）</dd>
+
+      <dt>基差回归 / 收敛<span class="en">Convergence</span></dt>
+      <dd>临近交割时，期货价格向现货（或指数）价格靠拢。（第五节）</dd>
+
+      <dt>升水 / 贴水<span class="en">Premium / Discount</span></dt>
+      <dd>期货高于现货（或指数）叫升水，低于则叫贴水。（第五节）</dd>
+
+      <dt>年化贴水率<span class="en">Annualized Discount</span></dt>
+      <dd>把贴水折算成一年的比率，便于和收益率比较。（第七节）</dd>
+
+      <dt>期限结构<span class="en">Term Structure</span></dt>
+      <dd>同一品种不同到期月份的价格曲线。（第五节）</dd>
+
+      <dt>正向市场<span class="en">Contango</span></dt>
+      <dd>远月价格高于近月，曲线向上，常反映持有成本。（第五节）</dd>
+
+      <dt>反向市场<span class="en">Backwardation</span></dt>
+      <dd>远月价格低于近月，曲线向下，常反映现货紧张。（第五节）</dd>
+
+      <dt>月差 / 跨期价差<span class="en">Calendar Spread</span></dt>
+      <dd>同一品种不同月份价格之差，本身可以被交易。（第五节）</dd>
+
+      <dt>持有成本<span class="en">Cost of Carry</span></dt>
+      <dd>持有现货直到未来交割所需的仓储、资金利息等成本，是期货理论价格的重要组成。（第五节）</dd>
+
+      <dt>现货价格<span class="en">Spot Price</span></dt>
+      <dd>实物或指数当前的成交价格。（第五节）</dd>
+
+      <dt>交割结算价<span class="en">Final Settlement Price</span></dt>
+      <dd>到期时用来结算的价格，股指期货通常取标的指数在特定时段的平均值。（第七节）</dd>
+
+      <div class="glossary-group">五、制度与风险控制</div>
+
+      <dt>涨跌停板<span class="en">Price Limit</span></dt>
+      <dd>相对于昨结算价，单日价格波动的上下限，触及后不能超限成交。（第六节）</dd>
+
+      <dt>封死涨停 / 跌停<span class="en">Locked Limit</span></dt>
+      <dd>价格封在涨停或跌停且几乎没有成交，对手盘消失，平仓困难。（第六节）</dd>
+
+      <dt>持仓限额<span class="en">Position Limit</span></dt>
+      <dd>交易所对单个客户或会员在某品种上的最大持仓手数的限制。（第六节）</dd>
+
+      <dt>交割月<span class="en">Delivery Month</span></dt>
+      <dd>合约到期的那个月，商品期货进入交割月后个人客户通常不能持仓。（第六节）</dd>
+
+      <dt>实物交割<span class="en">Physical Delivery</span></dt>
+      <dd>到期时通过仓单实际交收货物，多数商品期货属此类。（第六节）</dd>
+
+      <dt>现金交割<span class="en">Cash Settlement</span></dt>
+      <dd>到期不交收标的，只按差额结算现金，股指期货属此类。（第七节）</dd>
+
+      <dt>仓单<span class="en">Warehouse Receipt</span></dt>
+      <dd>交易所指定仓库开出的、代表标准化货物的凭证，是实物交割的载体。（第六节）</dd>
+
+      <dt>最后交易日<span class="en">Last Trading Day</span></dt>
+      <dd>合约能够交易的最后一天，股指期货为到期月第三个星期五（遇节假日顺延）。（第七节）</dd>
+
+      <dt>夜盘<span class="en">Night Session</span></dt>
+      <dd>部分品种晚上开放的交易时段，股指期货没有夜盘。（第六节）</dd>
+
+      <dt>移仓换月<span class="en">Roll Over</span></dt>
+      <dd>把快到期合约的仓位搬到下一个月份，主力合约也随之更换。（第五节）</dd>
+
+      <dt>展期<span class="en">Rolling</span></dt>
+      <dd>为长期保持仓位，定期平掉近月合约并开下一月份合约，展期成本等于月差。（第七节）</dd>
+
+      <dt>强制减仓<span class="en">Forced Reduction</span></dt>
+      <dd>当穿仓风险出现时，交易所按规则对盈利方强制减仓以弥补缺口，是极端情形下的风控手段。（第六节）</dd>
+
+      <div class="glossary-group">六、股指期货与指数</div>
+
+      <dt>IF</dt>
+      <dd>沪深 300 股指期货，每点 300 元。（第七节）</dd>
+
+      <dt>IH</dt>
+      <dd>上证 50 股指期货，每点 300 元。（第七节）</dd>
+
+      <dt>IC</dt>
+      <dd>中证 500 股指期货，每点 200 元。（第七节）</dd>
+
+      <dt>IM</dt>
+      <dd>中证 1000 股指期货，每点 200 元。（第七节）</dd>
+
+      <dt>IO / HO / MO</dt>
+      <dd>分别是沪深 300、上证 50、中证 1000 的股指期权，欧式、现金交割。（第七节）</dd>
+
+      <dt>沪深 300<span class="en">CSI 300</span></dt>
+      <dd>覆盖沪深两市规模大、流动性好的 300 只股票的指数。（第七节）</dd>
+
+      <dt>Beta<span class="en">β</span></dt>
+      <dd>股票或组合相对于指数的敏感度，Beta 为 1.2 表示指数涨 1%，组合平均涨 1.2%。（第七节）</dd>
+
+      <dt>对冲手数<span class="en">Hedge Ratio</span></dt>
+      <dd>对冲股票组合需要卖出的期货手数，约等于组合市值乘 Beta 除以合约价值。（第七节）</dd>
+
+      <dt>基差风险<span class="en">Basis Risk</span></dt>
+      <dd>对冲时因基差变化或跟踪误差而产生的剩余风险。（第七节）</dd>
+
+      <dt>跟踪误差<span class="en">Tracking Error</span></dt>
+      <dd>组合与对冲所用指数之间收益的偏离。（第七节）</dd>
+
+      <div class="glossary-group">七、策略</div>
+
+      <dt>套期保值<span class="en">Hedging</span></dt>
+      <dd>用期货对冲现货价格风险；卖出套保防跌，买入套保防涨。（第八节）</dd>
+
+      <dt>套利<span class="en">Arbitrage</span></dt>
+      <dd>利用价格间的不合理差距获取相对稳定的收益，不等于无风险。（第八节）</dd>
+
+      <dt>期现套利<span class="en">Cash-and-Carry</span></dt>
+      <dd>期货与现货的价差超过持有成本时，买现货卖期货（或相反），持有到收敛。（第八节）</dd>
+
+      <dt>跨期套利<span class="en">Calendar Arbitrage</span></dt>
+      <dd>同一品种买一个月份、卖另一个月份，赚月差变化。（第八节）</dd>
+
+      <dt>跨品种套利<span class="en">Inter-Commodity Arbitrage</span></dt>
+      <dd>相关品种之间的比价交易，如压榨利润、钢厂利润。（第八节）</dd>
+
+      <dt>投机<span class="en">Speculation</span></dt>
+      <dd>承担价格风险以博取价差收益，同时为市场提供流动性。（第八节）</dd>
+
+      <dt>压榨利润<span class="en">Crush Margin</span></dt>
+      <dd>大豆压榨成豆粕和豆油后的销售收入减去大豆成本，是油脂油料产业链的核心指标。（第八节）</dd>
+
+      <dt>产业链<span class="en">Industrial Chain</span></dt>
+      <dd>从原料到成品的上、中、下游链条，决定商品价格的供需逻辑。（第八节）</dd>
+
+      <dt>期货期权<span class="en">Options on Futures</span></dt>
+      <dd>标的是期货合约的期权，行权后得到的是期货头寸。（第九节）</dd>
+
+      <dt>线性 / 非线性<span class="en">Linear / Non-linear</span></dt>
+      <dd>期货盈亏与价格同步变化，是线性的；期权有 Delta、Gamma，是非线性的。（第九节）</dd>
+
+      <div class="glossary-group">八、纺锤体（作者构思与延伸）</div>
+
+      <dt>标准纺锤体<span class="en">Standard Spindle</span></dt>
+      <dd>期权版：假设同一波动率下各行权价理应有的流动性形状；期货版：以主力合约为峰、向两侧平滑衰减的流动性形状。（第十节）</dd>
+
+      <dt>现实纺锤体<span class="en">Real Spindle</span></dt>
+      <dd>用真实行情画出的形状，胖瘦是流动性，颜色是情绪热度或期限结构温度。（第十节）</dd>
+
+      <dt>偏差<span class="en">Deviation</span></dt>
+      <dd>现实相对于标准的差距，负值表示比应有的更难成交。（第十节）</dd>
+
+      <dt>焦点<span class="en">Focus</span></dt>
+      <dd>你在图上选中的位置，最多同时 3 个，选第 4 个时最早的让位。（第十节）</dd>
+
+      <dt>焦距扩散<span class="en">Focal Spread</span></dt>
+      <dd>不同到期日或月份按距离远近呈现不同的大小与宽度；期货版里，主力合约的“焦距”会随换月向后移动。（第十节）</dd>
+
+      <dt>价差体检<span class="en">Spread Check</span></dt>
+      <dd>开仓前对两条腿做的检查；期货版重点看流动性、换月窗口、交割月距离、月差分位和涨跌停状态。（第十节）</dd>
+
+      <dt>月份纺锤体<span class="en">Monthly Spindle</span></dt>
+      <dd>本文设想的期货版纺锤体：横轴是合约月份，胖瘦是流动性，颜色是期限结构温度。尚未被规格化或验证。（第十节）</dd>
+
+      <dt>期限结构温度<span class="en">Term-Structure Heat</span></dt>
+      <dd>本文设想的颜色指标：某月份相对现货的升贴水，在其自身历史分位上的位置。（第十节）</dd>
+
+      <dt>换月窗口<span class="en">Roll Window</span></dt>
+      <dd>主力合约向次主力迁移的时期，两个月份的流动性都变瘦，进出成本最高。（第十节）</dd>
+    </dl>
+
+    <h2>延伸阅读</h2>
+    <ul class="pillar-list">
+      <li>《中华人民共和国期货和衍生品法》（2022 年 8 月 1 日起施行）：我国期货市场的基础法律。</li>
+      <li>上海期货交易所、上海国际能源交易中心、大连商品交易所、郑州商品交易所、中国金融期货交易所、广州期货交易所官网：各品种合约规格、保证金、手续费、持仓限额和交易日历的权威来源，请以官网现行公告为准。</li>
+      <li>中国期货业协会：投资者教育材料与行业公开资料。</li>
+      <li>John C. Hull：《期权、期货及其他衍生品》（<em>Options, Futures, and Other Derivatives</em>），期货定价、套保与基差的经典教材。</li>
+      <li>本站《<a href="./index.html">期权白话手册</a>》：期权、希腊字母、波动率、价差与纺锤体的完整读本。</li>
+    </ul>
+
+    <footer class="article-footer">
+      <span>© 2026 Patrick Yang · CWCL 制度比较研究系列</span>
+      <a href="./index.html">姊妹篇：《期权白话手册》 →</a>
+    </footer>
+  </main>
+
+  <script>
+    /* ---------- reading progress ---------- */
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+    });
+
+    const $ = (id) => document.getElementById(id);
+    const num = (id, fallback) => {
+      const v = parseFloat($(id).value);
+      return isFinite(v) ? v : fallback;
+    };
+    const money = (v) => (v < 0 ? '−' : '') + Math.abs(Math.round(v)).toLocaleString('en-US');
+
+    /* ---------- mark-to-market simulator (assumed numbers) ---------- */
+    (function () {
+      const ids = ['m-dir', 'm-qty', 'm-open', 'm-mult', 'm-mr', 'm-cash', 'm-s1', 'm-s2', 'm-s3'];
+      function run() {
+        const dir = parseInt($('m-dir').value, 10);
+        const qty = Math.max(1, num('m-qty', 1));
+        const open = num('m-open', 3500);
+        const mult = num('m-mult', 10);
+        const mr = Math.max(0.1, num('m-mr', 10)) / 100;
+        const cash = num('m-cash', 5000);
+        const settles = [open, num('m-s1', open), num('m-s2', open), num('m-s3', open)];
+        let equity = cash;
+        const rows = [];
+        let firstCall = -1, wipe = -1;
+        for (let d = 0; d < settles.length; d++) {
+          const pnl = d === 0 ? 0 : dir * (settles[d] - settles[d - 1]) * mult * qty;
+          equity += pnl;
+          const margin = settles[d] * mult * qty * mr;
+          const avail = equity - margin;
+          if (avail < 0 && firstCall < 0) firstCall = d;
+          if (equity < 0 && wipe < 0) wipe = d;
+          rows.push({ d: d, s: settles[d], pnl: pnl, equity: equity, margin: margin, avail: avail });
+        }
+        const table = $('m-table');
+        let html = '<thead><tr><th>日期</th><th>结算价</th><th>当日盈亏</th><th>账户权益</th><th>占用保证金</th><th>可用资金</th></tr></thead><tbody>';
+        rows.forEach((r) => {
+          const bad = r.avail < 0;
+          html += '<tr><td>' + (r.d === 0 ? '第 0 天（开仓）' : '第 ' + r.d + ' 天') + '</td><td>' + r.s +
+            '</td><td>' + (r.d === 0 ? '0' : money(r.pnl)) + '</td><td>' + money(r.equity) +
+            '</td><td>' + money(r.margin) + '</td><td' + (bad ? ' style="color:#991B1B;font-weight:600"' : '') + '>' + money(r.avail) + (bad ? '（需追保）' : '') + '</td></tr>';
+        });
+        table.innerHTML = html + '</tbody>';
+        const notional = open * mult * qty;
+        let msg = '开仓合约价值 ' + money(notional) + ' 元，占用保证金约 ' + money(open * mult * qty * mr) + ' 元，杠杆约 ' + (1 / mr).toFixed(1) + ' 倍。';
+        if (wipe >= 0) msg += '<br><strong style="color:#991B1B">第 ' + wipe + ' 天账户权益变成负数（穿仓），缺口需要客户补足。</strong>';
+        else if (firstCall >= 0) msg += '<br><strong style="color:#991B1B">第 ' + firstCall + ' 天可用资金为负，会收到追加保证金通知；未按时补足可能被强行平仓。</strong>';
+        else msg += '<br>三天内可用资金始终为正，没有触发追加保证金。';
+        $('m-readout').innerHTML = msg;
+      }
+      ids.forEach((id) => $(id).addEventListener('input', run));
+      run();
+    })();
+
+    /* ---------- index futures: discount and hedge ratio ---------- */
+    (function () {
+      const ids = ['i-contract', 'i-spot', 'i-fut', 'i-days', 'i-pv', 'i-beta'];
+      function run() {
+        const mult = parseFloat($('i-contract').value);
+        const spot = num('i-spot', 4000), fut = num('i-fut', 3960);
+        const days = Math.max(1, num('i-days', 60));
+        const pv = num('i-pv', 1200000), beta = num('i-beta', 1);
+        const basis = spot - fut;
+        const pct = basis / spot;
+        const ann = pct * 365 / days;
+        const cv = fut * mult;
+        const hands = pv * beta / (spot * mult);
+        let state = basis > 0 ? '贴水' : (basis < 0 ? '升水' : '平水');
+        let s = '期货处于<strong>' + state + '</strong>：指数 − 期货 = ' + basis.toFixed(1) + ' 点，占指数 ' + (pct * 100).toFixed(2) + '%，年化约 <strong>' + (ann * 100).toFixed(1) + '%</strong>。';
+        s += '<br>一手期货合约价值 ≈ ' + money(cv) + ' 元。';
+        s += '<br>对冲手数 ≈ ' + money(pv) + ' × ' + beta + ' ÷ ' + money(spot * mult) + ' = <strong>' + hands.toFixed(2) + ' 手</strong>（取整约 ' + Math.round(hands) + ' 手）。';
+        if (basis > 0) s += '<br>做空期货对冲股票时，这段贴水在收敛过程中是你的<strong>对冲成本</strong>，到期前约 ' + money(basis * mult * Math.round(hands)) + ' 元（按取整手数）。';
+        else if (basis < 0) s += '<br>期货升水时，做空期货对冲在到期收敛中反而会多一点收益，但升水也可能很快消失。';
+        $('i-readout').innerHTML = s;
+      }
+      ids.forEach((id) => $(id).addEventListener('input', run));
+      run();
+    })();
+
+    /* ---------- futures monthly spindle (illustration, invented data) ---------- */
+    (function () {
+      const svg = $('fs-svg');
+      const NS = 'http://www.w3.org/2000/svg';
+      const el = (name, attrs) => {
+        const e = document.createElementNS(NS, name);
+        for (const k in attrs) e.setAttribute(k, attrs[k]);
+        return e;
+      };
+      const N = 8;
+      const NAMES = ['当月', '次月', '第3月', '第4月', '第5月', '第6月', '第7月', '第8月'];
+      const W = 640, H = 300, L = 44, R = 24, MID = 138, HALF = 92;
+      const g = (i, c, s) => Math.exp(-((i - c) * (i - c)) / (2 * s * s));
+      const STOPS = [[0, [59, 111, 182]], [0.4, [216, 180, 90]], [0.7, [217, 130, 43]], [1, [153, 27, 27]]];
+      const color = (h) => {
+        h = Math.max(0, Math.min(1, h));
+        for (let i = 1; i < STOPS.length; i++) {
+          if (h <= STOPS[i][0]) {
+            const a = STOPS[i - 1], b = STOPS[i], t = (h - a[0]) / (b[0] - a[0]);
+            return 'rgb(' + a[1].map((v, j) => Math.round(v + (b[1][j] - v) * t)).join(',') + ')';
+          }
+        }
+        return 'rgb(153,27,27)';
+      };
+      const heatOf = (curve, i) => {
+        if (curve === 'b') return 0.88 - 0.1 * i;
+        if (curve === 'd') return 0.08 + 0.025 * i;
+        return 0.36 + 0.07 * i;
+      };
+      const std = (i, p) => 0.9 * g(i, 1 + p, 1.1);
+      const real = (i, p) => {
+        const mix = (1 - p) * g(i, 1, 0.9) + p * g(i, 2, 0.9);
+        const dilute = 1 - 0.3 * Math.sin(Math.PI * p);
+        return Math.min(1, (0.04 + 0.92 * mix * dilute) * (i === 0 ? 0.6 : 1));
+      };
+      const dev = (r, s) => Math.max(-1, Math.min(1, (r - s) / Math.max(s, 0.2)));
+      const slot = (W - L - R) / N;
+      const X = (i) => L + slot * (i + 0.5);
+
+      function draw() {
+        const p = parseInt($('sp-p').value, 10) / 100;
+        $('sp-p-label').textContent = Math.round(p * 100);
+        const curve = $('sp-curve').value;
+        svg.replaceChildren();
+        const top = [], bot = [];
+        let best = 0, bestV = -1;
+        const devs = [];
+        for (let i = 0; i < N; i++) {
+          const r = real(i, p), s = std(i, p), h = r * HALF;
+          if (r > bestV) { bestV = r; best = i; }
+          devs.push(dev(r, s));
+          svg.appendChild(el('rect', { x: X(i) - slot * 0.36, y: MID - h, width: slot * 0.72, height: 2 * h, fill: color(heatOf(curve, i)), rx: 3 }));
+          top.push(X(i).toFixed(1) + ',' + (MID - s * HALF).toFixed(1));
+          bot.push(X(i).toFixed(1) + ',' + (MID + s * HALF).toFixed(1));
+          const t = el('text', { x: X(i), y: H - 22, 'text-anchor': 'middle', 'font-size': 12, fill: '#475569' });
+          t.textContent = NAMES[i];
+          svg.appendChild(t);
+          const v = el('text', { x: X(i), y: H - 7, 'text-anchor': 'middle', 'font-size': 11, fill: '#475569' });
+          v.textContent = (r).toFixed(2);
+          svg.appendChild(v);
+        }
+        svg.appendChild(el('polyline', { points: top.join(' '), fill: 'none', stroke: '#1E293B', 'stroke-width': 1.4, 'stroke-dasharray': '5 4' }));
+        svg.appendChild(el('polyline', { points: bot.join(' '), fill: 'none', stroke: '#1E293B', 'stroke-width': 1.4, 'stroke-dasharray': '5 4' }));
+        const tag = el('text', { x: X(best), y: MID - HALF - 12, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#1E3A8A' });
+        tag.textContent = '主力 ▼';
+        svg.appendChild(tag);
+        const key = el('text', { x: L, y: 18, 'font-size': 12, fill: '#475569' });
+        key.textContent = '柱高 = 流动性；虚线 = 标准纺锤体；颜色 = 期限结构温度（蓝 贴水，红 升水）';
+        svg.appendChild(key);
+
+        const worst = Math.min(devs[1], devs[2]);
+        let msg = '当前主力在 <strong>' + NAMES[best] + '</strong>；次月偏差 ' + devs[1].toFixed(2) + '，第 3 月偏差 ' + devs[2].toFixed(2) + '（偏差 = （现实 − 标准）÷ max（标准, 0.2），范围 −1 到 +1）。';
+        if (worst < -0.25) msg += '<br><strong style="color:#991B1B">两个月份都比标准更瘦：处于换月窗口，跨期价差的两条腿进出成本偏高。</strong>';
+        else if (p >= 0.9) msg += '<br>流动性已基本搬到下一个月份，仍持有旧月份的话，应尽快移仓。';
+        else msg += '<br>现实与标准大体吻合，主力月份流动性集中，跨期腿落在主力附近相对好成交。';
+        $('sp-readout').innerHTML = msg;
+      }
+      $('sp-p').addEventListener('input', draw);
+      $('sp-curve').addEventListener('change', draw);
+      draw();
+    })();
+
+    /* ---------- glossary search ---------- */
+    (function () {
+      const input = $('glossary-search');
+      const list = $('glossary-list');
+      const empty = $('glossary-empty');
+      const items = [];
+      let current = null;
+      Array.from(list.children).forEach((node) => {
+        if (node.classList.contains('glossary-group')) { current = { group: node, entries: [] }; items.push(current); }
+        else if (node.tagName === 'DT') { current.entries.push({ dt: node, dd: null }); }
+        else if (node.tagName === 'DD') { current.entries[current.entries.length - 1].dd = node; }
+      });
+      input.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        let shown = 0;
+        items.forEach((g) => {
+          let any = false;
+          g.entries.forEach((e) => {
+            const text = (e.dt.textContent + ' ' + (e.dd ? e.dd.textContent : '')).toLowerCase();
+            const hit = !q || text.indexOf(q) !== -1;
+            e.dt.style.display = hit ? '' : 'none';
+            if (e.dd) e.dd.style.display = hit ? '' : 'none';
+            if (hit) { any = true; shown++; }
+          });
+          g.group.style.display = any ? '' : 'none';
+        });
+        empty.style.display = shown === 0 ? 'block' : 'none';
+      });
+    })();
+  </script>
+</body>
+</html>
