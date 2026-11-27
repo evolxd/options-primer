@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>期权白话手册：从合约到纺锤体的完整读本 | Patrick Yang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-paper: #FAF8F5;
+      --bg-card: #F2EFE9;
+      --text-main: #1E293B;
+      --text-muted: #475569;
+      --accent-navy: #1E3A8A;
+      --accent-crimson: #991B1B;
+      --border-subtle: #E2DDD5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Inter", sans-serif;
+      font-size: 17px;
+      line-height: 1.85;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: var(--accent-navy);
+      z-index: 1000;
+      transition: width 0.1s ease-out;
+    }
+
+    header.site-nav {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px 20px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    header.site-nav a {
+      color: var(--accent-navy);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    main.article-container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 44px 20px 80px;
+    }
+
+    .category-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-navy);
+      margin-bottom: 14px;
+    }
+
+    h1.article-title {
+      font-family: "Noto Serif SC", "Songti SC", Georgia, serif;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: #0F172A;
+      margin-bottom: 16px;
+    }
+
+    .article-subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .meta-line {
+      font-size: 14px;
+      color: var(--text-muted);
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 32px;
+    }
+
+    .epistemic-box {
+      background-color: var(--bg-card);
+      border-left: 4px solid var(--accent-navy);
+      padding: 18px 20px;
+      margin-bottom: 36px;
+      border-radius: 0 6px 6px 0;
+      font-size: 14.5px;
+      line-height: 1.75;
+      color: var(--text-muted);
+    }
+
+    .epistemic-box strong { color: var(--text-main); }
+
+    h2 {
+      font-family: "Noto Serif SC", "Songti SC", Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #0F172A;
+      margin: 52px 0 18px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-subtle);
+      scroll-margin-top: 16px;
+    }
+
+    h3 {
+      font-family: "Noto Serif SC", "Songti SC", Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #0F172A;
+      margin: 30px 0 12px;
+    }
+
+    p {
+      margin-bottom: 1.45em;
+      text-align: justify;
+    }
+
+    a { color: var(--accent-navy); }
+
+    blockquote.fact-quote {
+      border-left: 3px solid #94A3B8;
+      padding: 4px 0 4px 18px;
+      margin: 26px 0;
+      color: #334155;
+      font-size: 16px;
+    }
+
+    .source-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      background: #E2E8F0;
+      color: #334155;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
+
+    .ledger-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .ledger-card {
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .ledger-card.bureaucracy { background: #FEF2F2; border-color: #FECACA; }
+    .ledger-card.solution { background: #EFF6FF; border-color: #BFDBFE; }
+
+    .ledger-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .ledger-card.bureaucracy .ledger-label { color: var(--accent-crimson); }
+    .ledger-card.solution .ledger-label { color: var(--accent-navy); }
+
+    .ledger-num {
+      font-family: "Noto Serif SC", serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0F172A;
+      line-height: 1.4;
+    }
+
+    .ledger-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    ul.pillar-list { margin: 20px 0 28px 20px; }
+    ul.pillar-list li { margin-bottom: 14px; }
+
+    ol.step-list { margin: 20px 0 28px 22px; }
+    ol.step-list li { margin-bottom: 14px; }
+
+    .highlight-ink {
+      font-weight: 600;
+      color: #0F172A;
+      background: linear-gradient(transparent 62%, #E0E7FF 62%);
+    }
+
+    .plain-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 24px 0;
+      font-size: 15.5px;
+      line-height: 1.8;
+    }
+
+    .plain-box .plain-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--accent-navy);
+      margin-bottom: 6px;
+    }
+
+    .table-wrap { overflow-x: auto; margin: 24px 0; }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14.5px;
+      line-height: 1.6;
+      min-width: 560px;
+    }
+
+    table.data-table th,
+    table.data-table td {
+      border: 1px solid var(--border-subtle);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.data-table th { background: var(--bg-card); font-weight: 600; }
+
+    .figure-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 24px 0 8px;
+    }
+
+    .figure-box svg { width: 100%; height: auto; display: block; }
+
+    .figure-caption {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+
+    .calc-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 16px;
+      margin: 8px 0 12px;
+      font-size: 14px;
+    }
+
+    .calc-controls label { display: flex; flex-direction: column; gap: 4px; color: var(--text-muted); }
+
+    .calc-controls select,
+    .calc-controls input[type="number"],
+    #glossary-search {
+      font: inherit;
+      font-size: 15px;
+      padding: 7px 10px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      background: #FFFFFF;
+      color: var(--text-main);
+    }
+
+    .calc-controls input[type="range"] { width: 100%; accent-color: var(--accent-navy); }
+
+    .calc-readout {
+      font-size: 14.5px;
+      line-height: 1.7;
+      background: var(--bg-card);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+    }
+
+    #glossary-search { width: 100%; margin: 6px 0 18px; }
+
+    dl.glossary dt {
+      font-weight: 600;
+      color: #0F172A;
+      margin-top: 18px;
+    }
+
+    dl.glossary dt .en {
+      font-weight: 400;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+
+    dl.glossary dd {
+      margin: 2px 0 0 0;
+      font-size: 15.5px;
+      line-height: 1.75;
+      color: #334155;
+    }
+
+    .glossary-group {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--accent-navy);
+      margin: 30px 0 4px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    #glossary-empty { display: none; color: var(--text-muted); font-size: 15px; }
+
+    ul.checklist { list-style: none; margin: 20px 0 28px; }
+    ul.checklist li {
+      padding: 10px 14px 10px 44px;
+      position: relative;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 0;
+    }
+    ul.checklist li::before {
+      content: "";
+      position: absolute;
+      left: 14px;
+      top: 17px;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--accent-navy);
+      border-radius: 3px;
+    }
+
+    nav.toc { margin: 8px 0 32px; }
+    nav.toc ol { margin-left: 22px; }
+    nav.toc li { margin-bottom: 4px; font-size: 16px; }
+
+    footer.article-footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 14px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer.article-footer a { color: var(--accent-navy); text-decoration: none; }
+
+    @media (max-width: 640px) {
+      h1.article-title { font-size: 25px; }
+      body { font-size: 16px; }
+      .ledger-grid { grid-template-columns: 1fr; }
+      .calc-controls { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <header class="site-nav">
+    <span>CWCL · 制度比较与公共观察</span>
+    <a href="#glossary">直达术语表 →</a>
+  </header>
+
+  <main class="article-container" id="top">
+    <div class="category-tag">Options Primer · 期权基础与实操</div>
+    <h1 class="article-title">期权白话手册：从合约到纺锤体的完整读本</h1>
+    <div class="article-subtitle">读完这一页，你应该能看懂期权链上的每一列数字，说得清每一个常见名词，亲手算出一笔价差单的最大盈亏，并理解作者构思的“双纺锤体”模型为什么能让一张几百行的数字表变成一眼能读的形状。</div>
+    <div class="meta-line">作者：Patrick Yang &nbsp;|&nbsp; 2026年11月 &nbsp;|&nbsp; 适合：零基础到能独立看懂期权链</div>
+
+    <div class="epistemic-box">
+      <strong>【信源与观点边界声明】</strong><br>
+      本文关于期权合约规则、权利与义务、行权与指派、保证金与风险的<strong>通用事实</strong>，转述自美国期权清算公司（<strong>OCC</strong>）公开发布的《标准化期权的特征与风险》（<em>Characteristics and Risks of Standardized Options</em>）、芝加哥期权交易所（<strong>Cboe</strong>）的公开教育材料，以及 Black 与 Scholes 1973 年的经典定价论文和 John C. Hull 的教科书《期权、期货及其他衍生品》；本文是转述与白话改写，不是逐字引用。<br><br>
+      文中的<strong>“双纺锤体与焦距扩散”模型、其读图方法、价差体检的取向与全部“拟定”参数</strong>，是作者 Patrick Yang 的个人构思与设计推演，处于设计与原型阶段，<strong>尚未经过真实行情校准</strong>。文中所有价格、行权价、权利金，均为<strong>为讲解而编的假设数字</strong>，标的“DEMO”并不存在。<br><br>
+      本文由 AI（Claude）依作者构思辅助起草，属于学习材料，<strong>不构成任何投资建议、买卖建议或收益承诺</strong>。期权可能让你亏掉全部本金，卖出期权的亏损甚至可能超过本金。
+    </div>
+
+    <h2 id="toc-title">怎么读这一页</h2>
+
+    <p>全页分成十二节，前面是后面的地基，建议顺序读。每一节结尾有一个“白话一句话”，如果你只想抓主干，只读这些句子也能得到一条完整的线。</p>
+
+    <nav class="toc">
+      <ol>
+        <li><a href="#s1">期权到底是什么：一份有期限的“选择权合同”</a></li>
+        <li><a href="#s2">四个基本动作：买卖 × 看涨看跌</a></li>
+        <li><a href="#s3">一份期权值多少钱：内在价值与时间价值</a></li>
+        <li><a href="#s4">希腊字母：给风险装上仪表盘</a></li>
+        <li><a href="#s5">波动率：期权价格里最难懂也最重要的一块</a></li>
+        <li><a href="#s6">流动性：为什么“看起来便宜”不等于“买得到”</a></li>
+        <li><a href="#s7">价差与组合：把风险“框”起来</a></li>
+        <li><a href="#s8">到期、行权与指派：最容易吃亏的流程</a></li>
+        <li><a href="#s9">杠杆、保证金与风险管理</a></li>
+        <li><a href="#s10">作者构思：双纺锤体与焦距扩散</a></li>
+        <li><a href="#s11">实操：从看链到平仓的完整流程</a></li>
+        <li><a href="#glossary">术语表：九十多个名词的白话解释</a></li>
+      </ol>
+    </nav>
+
+    <div class="plain-box">
+      <span class="plain-label">读完你应当能做到</span>
+      看到一行期权报价，说出这是买还是卖、看涨还是看跌、哪天到期、多少钱一手、最多亏多少；看到一个价差组合，当场心算出最大盈利、最大亏损和盈亏平衡点；看到一条期权链，判断哪几行“好成交”、哪几行“只是看着热闹”。
+    </div>
+
+    <!-- ===================== 第一节 ===================== -->
+    <h2 id="s1">一、期权到底是什么：一份有期限的“选择权合同”</h2>
+
+    <p>先用一个日常类比。你看中一套房子，开价 100 万，但你想再观察一个月才决定。于是你给卖家 2 万元，约定：<strong>一个月内，你有权按 100 万买下这套房子，但没有义务</strong>。如果一个月后房价涨到 120 万，你行使权利，等于省了 20 万（扣掉那 2 万，净赚 18 万）；如果房价跌了，你直接放弃，最多损失那 2 万。</p>
+
+    <p>这就是期权的全部精神：<span class="highlight-ink">付一笔小钱，买一个“可以选择、不必承担”的权利；对方收了钱，就必须在你行使权利时履约。</span>那 2 万叫<strong>权利金</strong>，100 万叫<strong>行权价</strong>，一个月叫<strong>到期日</strong>，房子叫<strong>标的</strong>。</p>
+
+    <blockquote class="fact-quote">
+      <div class="source-badge">转述自：OCC《标准化期权的特征与风险》</div><br>
+      在美国上市的标准化股票期权中，一份合约通常对应 100 股标的股票。买方支付权利金，获得在约定条件下买入或卖出标的的权利；卖方收取权利金，承担在买方行使权利时履行交易的义务。买方的最大亏损是已付的权利金，卖方的风险取决于所卖合约的类型。
+    </blockquote>
+
+    <h3>合约上的五个要素</h3>
+    <ul class="pillar-list">
+      <li><strong>标的（Underlying）</strong>：权利针对的资产，比如某只股票或某个指数。</li>
+      <li><strong>类型</strong>：<strong>看涨（Call）</strong>是“按行权价买入”的权利，<strong>看跌（Put）</strong>是“按行权价卖出”的权利。</li>
+      <li><strong>行权价（Strike）</strong>：约定的成交价格。</li>
+      <li><strong>到期日（Expiration）</strong>：权利失效的日期。美股股票期权的常规月度合约通常在每月第三个星期五到期，另有每周到期的“周权”。</li>
+      <li><strong>合约乘数</strong>：标准股票期权一手对应 100 股。所以报价 2.40，一手实际要付 <strong>2.40 × 100 = 240 美元</strong>。这个乘数是新手最常算错的地方。</li>
+    </ul>
+
+    <h3>美式与欧式</h3>
+    <p><strong>美式期权</strong>在到期前任何一天都可以行权，美国的个股期权属于这一类；<strong>欧式期权</strong>只能在到期日行权，许多指数期权（如标普 500 指数期权）属于这一类，并且常常以现金交割而不是真的交收股票。两者的区别在第八节还会反复出现。</p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      期权是“付定金换选择权”：买方付钱得权利，卖方收钱担义务，一手通常管 100 股。
+    </div>
+
+    <!-- ===================== 第二节 ===================== -->
+    <h2 id="s2">二、四个基本动作：买卖 × 看涨看跌</h2>
+
+    <p>世界上所有复杂的期权组合，都是这四个“积木”拼出来的：买看涨、卖看涨、买看跌、卖看跌。先把每块积木的性格记牢。</p>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>动作</th><th>你的观点</th><th>最大收益</th><th>最大亏损</th><th>一句话</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>买入看涨（Long Call）</td><td>涨得多</td><td>理论上无限</td><td>已付权利金</td><td>用小钱押上涨，亏也有限</td></tr>
+          <tr><td>卖出看涨（Short Call）</td><td>不会大涨</td><td>收到的权利金</td><td>理论上无限（若没有持股）</td><td>收租金，但踩空时很痛</td></tr>
+          <tr><td>买入看跌（Long Put）</td><td>跌得多</td><td>行权价减权利金，乘以 100</td><td>已付权利金</td><td>给股票买保险，或押下跌</td></tr>
+          <tr><td>卖出看跌（Short Put）</td><td>不会大跌</td><td>收到的权利金</td><td>行权价减权利金，乘以 100（标的归零时）</td><td>收租金，愿意在低价接货</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>注意其中的<strong>不对称</strong>：买方“亏有限、赚可能很多”，卖方“赚有限、亏可能很多”。这并不意味着买方占便宜：买方的胜率通常较低，因为权利金里已经包含了市场对未来波动的定价，时间每过一天，买方就在流失一点时间价值（第三节）。</p>
+
+    <h3>下单时的四个动词</h3>
+    <p>券商界面里你会看到四个缩写，它们只是在回答“这一笔是新开还是了结”：</p>
+    <ul class="pillar-list">
+      <li><strong>买入开仓（BTO, Buy to Open）</strong>：新买入一份合约。</li>
+      <li><strong>卖出开仓（STO, Sell to Open）</strong>：新卖出一份合约，开始承担义务。</li>
+      <li><strong>卖出平仓（STC, Sell to Close）</strong>：把你之前买的合约卖掉，了结。</li>
+      <li><strong>买入平仓（BTC, Buy to Close）</strong>：把你之前卖的合约买回来，了结。</li>
+    </ul>
+    <p>下错这个动词是新手常见失误：想平仓却点成了开仓，结果账户里多出一个反向仓位。下单前一定读一遍预览页的“开仓 / 平仓”字样。</p>
+
+    <h3>动手试一试：到期损益计算器</h3>
+    <p>下面的计算器只用假设数字，标的现价设为 100。选一个组合，改一改行权价和权利金，拖动“到期时股价”滑块，看每一份合约在到期当天是赚是亏。<strong>它画的是“到期那一天”的损益</strong>，不含到期前的价格波动。</p>
+
+    <div class="figure-box">
+      <div class="calc-controls">
+        <label>组合
+          <select id="calc-preset">
+            <option value="lc">买入看涨 Long Call</option>
+            <option value="sc">卖出看涨 Short Call</option>
+            <option value="lp">买入看跌 Long Put</option>
+            <option value="sp">卖出看跌 Short Put</option>
+            <option value="bcs">牛市看涨价差（借记）</option>
+            <option value="bps" selected>牛市看跌价差（贷记）</option>
+          </select>
+        </label>
+        <label>到期时股价：<span id="calc-s-label">100</span>
+          <input type="range" id="calc-s" min="60" max="140" step="0.5" value="100" />
+        </label>
+        <label id="calc-k1-wrap">腿 A 行权价
+          <input type="number" id="calc-k1" step="0.5" />
+        </label>
+        <label id="calc-p1-wrap">腿 A 权利金（每股）
+          <input type="number" id="calc-p1" step="0.05" min="0" />
+        </label>
+        <label id="calc-k2-wrap">腿 B 行权价
+          <input type="number" id="calc-k2" step="0.5" />
+        </label>
+        <label id="calc-p2-wrap">腿 B 权利金（每股）
+          <input type="number" id="calc-p2" step="0.05" min="0" />
+        </label>
+      </div>
+      <svg id="calc-svg" viewBox="0 0 640 260" role="img" aria-label="到期损益图"></svg>
+      <div class="calc-readout" id="calc-readout"></div>
+    </div>
+    <div class="figure-caption">横轴是到期时的股价，纵轴是每一手的盈亏（已乘以 100）。蓝色区域是盈利，红色区域是亏损；竖虚线是你拖动的“到期时股价”。数字均为讲解用的假设值。</div>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      四块积木决定“赚多少、亏多少、赌哪个方向”；先说清自己是买方还是卖方，再谈别的。
+    </div>
+
+    <!-- ===================== 第三节 ===================== -->
+    <h2 id="s3">三、一份期权值多少钱：内在价值与时间价值</h2>
+
+    <p>期权的价格（权利金）由两块拼成：<strong>权利金 = 内在价值 + 时间价值</strong>。</p>
+
+    <h3>先看“价内、平价、价外”</h3>
+    <p>用现价和行权价的关系，给期权贴三种标签：</p>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>标签</th><th>看涨期权</th><th>看跌期权</th><th>含义</th></tr></thead>
+        <tbody>
+          <tr><td>价内 ITM</td><td>现价高于行权价</td><td>现价低于行权价</td><td>现在行权就有账面利润</td></tr>
+          <tr><td>平价 ATM</td><td>现价约等于行权价</td><td>现价约等于行权价</td><td>处在分界线上</td></tr>
+          <tr><td>价外 OTM</td><td>现价低于行权价</td><td>现价高于行权价</td><td>现在行权没有意义，全靠未来变化</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>内在价值：现在立刻行权能拿到多少</h3>
+    <p>看涨的内在价值等于“现价减行权价”（不足零按零算）；看跌的内在价值等于“行权价减现价”（不足零按零算）。价外期权的内在价值为零。例如现价 100，行权价 95 的看涨期权，内在价值是 5。</p>
+
+    <h3>时间价值：为“还有可能”付的钱</h3>
+    <p>权利金超出内在价值的部分叫时间价值。它买的是“到期之前，事情可能变得对我更有利”的机会。离到期越远、市场预期波动越大，这个机会越值钱；<strong>随着时间流逝，它会一点点蒸发，到期那一刻归零</strong>。这种蒸发叫<strong>时间衰减</strong>，对买方是慢性失血，对卖方则是慢性收入。</p>
+
+    <p>算一个例子。现价 100，一份 3 个月后到期、行权价 100 的看涨期权报价 4.50。它是平价，内在价值为 0，所以 4.50 全部是时间价值。三个月后如果股价正好还在 100，这份期权值 0，买方亏掉全部 4.50。</p>
+
+    <h3>盈亏平衡点：到期时你至少需要多少</h3>
+    <ul class="pillar-list">
+      <li>买入看涨：盈亏平衡 = 行权价 + 权利金。</li>
+      <li>买入看跌：盈亏平衡 = 行权价 − 权利金。</li>
+      <li>卖出看涨：盈亏平衡 = 行权价 + 收到的权利金。</li>
+      <li>卖出看跌：盈亏平衡 = 行权价 − 收到的权利金。</li>
+    </ul>
+
+    <blockquote class="fact-quote">
+      <div class="source-badge">转述自：Black–Scholes 与 Hull 教科书的共同结论</div><br>
+      期权价格不只取决于股价与行权价，还取决于距到期的时间、无风险利率、预期股息，以及最关键的——标的未来波动幅度的预期。其中波动率是唯一无法直接观察、只能从市场价格反推或从历史估计的输入。
+    </blockquote>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      权利金等于“现在就能拿到的钱”加“为未来可能性付的钱”；后者每天蒸发，所以买期权要对时间负责。
+    </div>
+
+    <!-- ===================== 第四节 ===================== -->
+    <h2 id="s4">四、希腊字母：给风险装上仪表盘</h2>
+
+    <p>希腊字母不是玄学，它们只是回答五个朴素的问题：<em>如果某个条件变一点点，我这份期权的价值会变多少？</em>你可以把它们看成汽车仪表盘上的五个表。</p>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>希腊字母</th><th>回答的问题</th><th>怎么读</th><th>白话理解</th></tr></thead>
+        <tbody>
+          <tr><td>Delta Δ</td><td>股价变动 1 元，期权价格变多少</td><td>看涨在 0 到 1 之间，看跌在 −1 到 0 之间</td><td>“它有多像一股股票”；Delta 0.30 约等于持有 30 股的方向敞口</td></tr>
+          <tr><td>Gamma Γ</td><td>股价变动 1 元，Delta 本身变多少</td><td>平价、临近到期时最大</td><td>“Delta 的加速度”；Gamma 越大，仓位越容易失控</td></tr>
+          <tr><td>Theta Θ</td><td>每过一天，期权价格变多少</td><td>买方为负，卖方为正</td><td>“每天的租金”；平价期权越临近到期衰减越快</td></tr>
+          <tr><td>Vega ν</td><td>隐含波动率变 1 个百分点，价格变多少</td><td>离到期越远、越接近平价，Vega 越大</td><td>“对恐慌程度有多敏感”</td></tr>
+          <tr><td>Rho ρ</td><td>利率变 1 个百分点，价格变多少</td><td>通常最不起眼</td><td>“对利率的敏感度”，短期期权里影响很小</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>三个用得上的经验</h3>
+    <ul class="pillar-list">
+      <li><strong>Delta 可以粗略当作“到期价内的概率”</strong>：Delta 0.30 的看涨，市场大致认为到期时价内的可能在三成左右。注意这只是粗略的近似，不是精确概率。</li>
+      <li><strong>卖方赚的是 Theta，怕的是 Gamma</strong>：时间每天给你送钱，但一次剧烈行情会让 Gamma 把亏损放大。</li>
+      <li><strong>财报前后看 Vega</strong>：财报公布前隐含波动率通常被推高，公布后迅速回落，这叫<strong>波动率冲击（IV Crush）</strong>。即使股价方向猜对了，买方也可能因为 Vega 损失而不赚钱。</li>
+    </ul>
+
+    <p>一个组合的希腊字母可以直接相加：买一份 Delta 0.40 的看涨，再卖一份 Delta 0.25 的看涨，合计 Delta 约 0.15。这正是价差组合“把风险框起来”的数学基础，第七节会用到。</p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      Delta 管方向，Gamma 管方向的加速，Theta 管时间，Vega 管恐慌，Rho 管利率；开仓前至少看懂前四个。
+    </div>
+
+    <!-- ===================== 第五节 ===================== -->
+    <h2 id="s5">五、波动率：期权价格里最难懂也最重要的一块</h2>
+
+    <p>波动率衡量“价格上下摇摆的幅度”。期权市场里有两种波动率，千万别混：</p>
+
+    <div class="ledger-grid">
+      <div class="ledger-card solution">
+        <div class="ledger-label">历史波动率（HV）</div>
+        <div class="ledger-num">已经发生的摇摆</div>
+        <div class="ledger-desc">用过去一段时间的价格算出来的，是后视镜里的事实，可以直接计算。</div>
+      </div>
+      <div class="ledger-card solution">
+        <div class="ledger-label">隐含波动率（IV）</div>
+        <div class="ledger-num">市场预期的摇摆</div>
+        <div class="ledger-desc">从期权的当前价格反推出来的，是市场愿意为未来摇摆付的价钱，是“恐慌温度计”。</div>
+      </div>
+    </div>
+
+    <p>IV 高，意味着期权贵；IV 低，意味着期权便宜。但“高”和“低”要和这只股票自己的历史比，所以有两个常用指标：</p>
+    <ul class="pillar-list">
+      <li><strong>IV Rank</strong>：当前 IV 在过去一年最低值和最高值之间所处的位置，等于“（当前 − 最低）÷（最高 − 最低）”。0% 是一年里最低，100% 是一年里最高。</li>
+      <li><strong>IV Percentile（IV 百分位）</strong>：过去一年里有多少比例的交易日 IV 比现在低。它不受单次极端值影响，通常比 IV Rank 更稳。</li>
+    </ul>
+
+    <h3>两个“形状”：偏斜与期限结构</h3>
+    <p>同一只股票、同一个到期日，不同行权价的 IV 并不相同。美股个股与指数常见的现象是：<strong>越往下的看跌期权，IV 越高</strong>，因为市场愿意为“防暴跌的保险”付溢价。把各行权价的 IV 连成曲线，就是<strong>波动率偏斜（Skew）</strong>（有时呈微笑形，叫波动率微笑）。</p>
+    <p>同一个行权价、不同到期日的 IV 连成的曲线，叫<strong>期限结构</strong>。通常远月 IV 更平缓，临近重大事件（如财报）的近月 IV 会被推高。</p>
+
+    <p>这两个“形状”正是第十节纺锤体“颜色”要表达的内容：<span class="highlight-ink">哪里的 IV 异常高，就是市场在哪里“怕得最凶”。</span></p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      IV 是期权的“价格标签里的恐慌成分”；高 IV 时适合想卖的人，低 IV 时适合想买的人，但要跟自己的历史比。
+    </div>
+
+    <!-- ===================== 第六节 ===================== -->
+    <h2 id="s6">六、流动性：为什么“看起来便宜”不等于“买得到”</h2>
+
+    <p>很多新手在期权链上只看“价格便宜不便宜”，却忽略了更要命的问题：<strong>这个价格你真的能成交吗？</strong>期权不像大盘股，很多合约一天只有几手成交，买价和卖价之间的距离可能大得吓人。</p>
+
+    <h3>看懂一行期权报价</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>栏目</th><th>含义</th><th>实操提示</th></tr></thead>
+        <tbody>
+          <tr><td>买价 Bid</td><td>做市商愿意买入的最高价（你卖时能拿到的价格）</td><td>你卖出时通常只能接近这个价</td></tr>
+          <tr><td>卖价 Ask</td><td>做市商愿意卖出的最低价（你买时要付的价格）</td><td>你买入时通常要接近这个价</td></tr>
+          <tr><td>买卖价差</td><td>卖价减买价</td><td>越小越好；价差本身就是你的“进场成本”</td></tr>
+          <tr><td>中间价 Mid</td><td>买价和卖价的平均</td><td>限价单常从中间价附近开始挂</td></tr>
+          <tr><td>成交量 Volume</td><td>今天已成交的手数</td><td>反映“今天”的热度</td></tr>
+          <tr><td>持仓量 OI</td><td>当前未平仓的合约总数</td><td>反映“累积”的参与度，一天只更新一次</td></tr>
+          <tr><td>隐含波动率 IV</td><td>这一行价格里包含的预期波动</td><td>用来比较各行是否异常</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>买卖价差到底有多贵</h3>
+    <p>假设一个期权买价 1.00、卖价 1.40，中间价 1.20。你买入要付 1.40，立刻想卖只能卖 1.00，<strong>瞬间浮亏 0.40，占权利金近三成</strong>。而一个买价 1.19、卖价 1.21 的合约，进出的成本几乎可以忽略。同样的“看法”，选哪一行合约，差别可以比方向判断还大。</p>
+    <p>所以实操里一个朴素的习惯是：<strong>一律用限价单</strong>，从中间价附近挂起，耐心等成交；对价差大的合约，宁可放弃。</p>
+
+    <h3>持仓量会骗人</h3>
+    <p>持仓量大不等于现在好成交。有的行权价历史上积累了大量仓位，但今天的买卖价差很宽、几乎没有挂单，这叫<strong>“持仓量陷阱”</strong>：账面很热闹，实际进出很难。真正好成交的合约，是<strong>价差窄、挂单厚、持仓量也有支撑</strong>三者同时满足。</p>
+
+    <blockquote class="fact-quote">
+      <div class="source-badge">转述自：Cboe 期权教育材料</div><br>
+      期权的流动性体现在较窄的买卖价差、较大的成交量与持仓量上。流动性较差的合约，交易成本更高，在需要快速平仓时也更难以理想价格成交。
+    </blockquote>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      价格是“账面”，价差是“成本”，流动性是“能不能走得掉”；开仓前先看成本，再谈观点。
+    </div>
+
+    <!-- ===================== 第七节 ===================== -->
+    <h2 id="s7">七、价差与组合：把风险“框”起来</h2>
+
+    <p>单买或单卖期权，风险要么无限、要么权利金流失很快。<strong>价差（Spread）</strong>就是同时买一份、卖一份，让两条腿的风险互相抵消，把最大亏损“框”在一个已知的数里。</p>
+
+    <h3>垂直价差：最基础也最常用的价差</h3>
+    <p>“垂直”指的是两条腿<strong>到期日相同、行权价不同</strong>。它有四种，按“买哪条腿、用看涨还是看跌”分：</p>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>名称</th><th>怎么搭</th><th>现金流</th><th>观点</th></tr></thead>
+        <tbody>
+          <tr><td>牛市看涨价差</td><td>买低行权价看涨，卖高行权价看涨</td><td>净付出（借记）</td><td>温和看涨</td></tr>
+          <tr><td>熊市看涨价差</td><td>卖低行权价看涨，买高行权价看涨</td><td>净收入（贷记）</td><td>看不会大涨</td></tr>
+          <tr><td>牛市看跌价差</td><td>卖高行权价看跌，买低行权价看跌</td><td>净收入（贷记）</td><td>看不会大跌</td></tr>
+          <tr><td>熊市看跌价差</td><td>买高行权价看跌，卖低行权价看跌</td><td>净付出（借记）</td><td>温和看跌</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>用一个完整例子算清楚</h3>
+    <p>下面的数字全是假设。标的 DEMO，现价 100。你的观点是“一个月内不会大跌”，于是做一个<strong>牛市看跌价差（贷记）</strong>：</p>
+    <ul class="pillar-list">
+      <li><strong>卖出</strong> 95 看跌，收权利金 2.40；</li>
+      <li><strong>买入</strong> 90 看跌，付权利金 1.10（它是“保护腿”，防止下跌时亏无限）。</li>
+    </ul>
+    <p>计算：</p>
+    <ul class="pillar-list">
+      <li>净收入 = 2.40 − 1.10 = <strong>1.30</strong> 每股，一手 <strong>130 美元</strong>，这就是<strong>最大盈利</strong>（到期股价在 95 之上，两条腿都作废）。</li>
+      <li>价差宽度 = 95 − 90 = 5，一手 500 美元。</li>
+      <li><strong>最大亏损</strong> = 宽度 − 净收入 = 5 − 1.30 = 3.70 每股，一手 <strong>370 美元</strong>（到期股价在 90 之下）。</li>
+      <li><strong>盈亏平衡点</strong> = 卖腿行权价 − 净收入 = 95 − 1.30 = <strong>93.70</strong>。</li>
+    </ul>
+    <p>你可以把上面的计算器切到“牛市看跌价差（贷记）”核对：最大盈利 130、最大亏损 370、平衡点 93.70。<span class="highlight-ink">价差的魅力在于：下单之前，最坏会亏多少就已经写在数字里。</span></p>
+
+    <h3>其他常见组合速查</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>组合</th><th>结构</th><th>最大风险</th><th>适合的场景</th></tr></thead>
+        <tbody>
+          <tr><td>备兑看涨 Covered Call</td><td>持有 100 股，同时卖 1 份看涨</td><td>股票下跌的亏损（权利金略作缓冲），且上涨收益被封顶</td><td>已持有股票，愿意在更高价卖出并收租</td></tr>
+          <tr><td>保护性看跌 Protective Put</td><td>持有 100 股，同时买 1 份看跌</td><td>权利金，加上行权价以下才开始被保护的缺口</td><td>给持仓买保险</td></tr>
+          <tr><td>现金担保看跌 CSP</td><td>备足全额现金，卖 1 份看跌</td><td>标的大跌时被迫接货的亏损</td><td>想在更低价买入某只股票，并收租</td></tr>
+          <tr><td>领口 Collar</td><td>持股 + 买看跌 + 卖看涨</td><td>上下都被框住</td><td>想锁定一个区间</td></tr>
+          <tr><td>跨式 Straddle</td><td>同价买入看涨与看跌</td><td>两份权利金之和</td><td>预期大幅波动但不知方向（如财报）</td></tr>
+          <tr><td>宽跨式 Strangle</td><td>买入价外看涨与价外看跌</td><td>两份权利金之和（比跨式便宜）</td><td>同上，但要求更大的波动才盈利</td></tr>
+          <tr><td>铁鹰 Iron Condor</td><td>一个熊市看涨价差加一个牛市看跌价差</td><td>宽度减净收入</td><td>预期标的在区间内盘整</td></tr>
+          <tr><td>日历价差 Calendar</td><td>卖近月、买同价远月</td><td>净付出的权利金</td><td>赚近月时间衰减比远月快的差额</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>滚动：不到期就换仓</h3>
+    <p><strong>滚动（Roll）</strong>指把一份快到期的合约平掉，同时开一份更远到期（常常也换行权价）的合约。它能把亏损的仓位“往后推”，也可能只是把一个小问题变成大问题，所以滚动之前要问：<em>如果今天是新开仓，我还愿意做这一笔吗？</em></p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      价差是“买一份保险再卖一份”，用封顶的收益换封顶的亏损；开仓前能一眼算出最坏结果，是价差最大的好处。
+    </div>
+
+    <!-- ===================== 第八节 ===================== -->
+    <h2 id="s8">八、到期、行权与指派：最容易吃亏的流程</h2>
+
+    <p>很多亏损不是因为方向看错，而是因为不懂到期当天会发生什么。</p>
+
+    <h3>行权与指派</h3>
+    <p>买方决定行权时，对应的卖方会被<strong>指派（Assignment）</strong>：看涨被指派，你必须以行权价卖出 100 股；看跌被指派，你必须以行权价买入 100 股。指派由清算机构分配给券商，再由券商按各自规则（通常是随机或按先后）分配给具体账户，<strong>你无法知道、也无法拒绝</strong>。</p>
+
+    <h3>到期时发生什么</h3>
+    <ul class="pillar-list">
+      <li><strong>价外期权</strong>：失效，权利金归卖方所有。</li>
+      <li><strong>价内期权</strong>：通常会被自动行权（美国股票期权一般对价内至少一定幅度的合约自动处理，具体门槛以你的券商规则为准）。</li>
+      <li><strong>风险</strong>：如果你卖了价内的看跌，到期就可能突然“多出 100 股”，需要有足够的资金交收；如果你不想接，必须在到期前平仓。</li>
+    </ul>
+
+    <h3>三个“暗礁”</h3>
+    <ul class="pillar-list">
+      <li><strong>提前指派</strong>：美式期权的卖方在到期前就可能被指派。最常见的情形是，价内的卖出看涨在<strong>除息日</strong>前夕——持有者为了拿到股息而提前行权；深度价内的卖出看跌也可能被提前行权。</li>
+      <li><strong>钉住风险（Pin Risk）</strong>：到期那天股价恰好停在你卖出的行权价附近，你不知道自己会不会被指派，周末持有的股票头寸还会随周一开盘价波动。保守的做法是<strong>到期日前就平仓</strong>，不要赌最后一天。</li>
+      <li><strong>价差的一条腿被指派</strong>：你的卖腿被行权，而保护腿还在，账户会先出现一个股票头寸，需要尽快处理（可以在保护腿上行权来对冲，或买卖股票平掉）。提前想好预案，比事发后手忙脚乱强。</li>
+    </ul>
+
+    <h3>交割方式</h3>
+    <p><strong>实物交割</strong>：真的交收股票（个股期权）。<strong>现金交割</strong>：只按差额结算现金（许多指数期权），没有“突然多出股票”的问题，但仍有盈亏。</p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      不想被交割，就别拖到最后一刻；到期前一两天主动平仓，是最便宜的“保险”。
+    </div>
+
+    <!-- ===================== 第九节 ===================== -->
+    <h2 id="s9">九、杠杆、保证金与风险管理</h2>
+
+    <p>期权天然带杠杆：花 240 美元就能控制 100 股、价值一万美元的股票的价格变化。杠杆放大盈利，也放大亏损；更危险的是，它让你不知不觉地<strong>持有远超账户承受力的仓位</strong>。</p>
+
+    <div class="ledger-grid">
+      <div class="ledger-card bureaucracy">
+        <div class="ledger-label">高成本弊端 · 裸卖</div>
+        <div class="ledger-num">收租金的外表，吞本金的尾部</div>
+        <div class="ledger-desc">裸卖看涨的理论亏损无限，裸卖看跌最多亏到标的归零；风平浪静时每天收一点租金，一次急跌或跳涨就可能吞掉几个月的收入，甚至本金。</div>
+      </div>
+      <div class="ledger-card solution">
+        <div class="ledger-label">框住风险 · 价差</div>
+        <div class="ledger-num">最坏亏损在下单前已知</div>
+        <div class="ledger-desc">用保护腿封顶，收益也被封顶，但你始终知道最坏情况是多少，可以据此决定仓位大小，睡得着觉。</div>
+      </div>
+    </div>
+
+    <h3>几个必须懂的风险概念</h3>
+    <ul class="pillar-list">
+      <li><strong>保证金</strong>：卖出期权时，券商要求你押多少钱作为担保。它不是“亏损上限”，保证金够用不代表你不会被追加。</li>
+      <li><strong>名义敞口</strong>：用 Delta 折算后，你的期权仓位相当于持有多少股票的价值。杠杆不看你花了多少钱，而看这个敞口相对净值的倍数。</li>
+      <li><strong>Beta 加权 Delta</strong>：不同股票对大盘的敏感度不同，把各标的的 Delta 敞口乘以各自的 Beta 加总，才能看出“大盘跌 10% 时我整体会怎样”。</li>
+      <li><strong>压力测试</strong>：假设大盘下跌 10%、20%，同时波动率飙升，重新给全部合约定价，算出整个账户的亏损。它回答“最坏的日子我扛不扛得住”。</li>
+      <li><strong>集中度</strong>：全部仓位都押在同一产业链或同一只股票，等于把分散的优势丢掉。</li>
+    </ul>
+
+    <h3>用仓位大小管理风险，而不是用祈祷</h3>
+    <p>一个朴素的做法是<strong>先定“单笔最多亏多少”，再倒推手数</strong>。例如你规定单笔最大亏损不超过账户的 2%，账户 5 万美元，上限就是 1000 美元。若一手价差的最大亏损是 370 美元，最多做 2 手（740 美元），而不是“看着机会好就多做几手”。具体比例属于个人风险偏好，这里只说明方法。</p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      活得久比赚得快重要；先问“最坏亏多少、扛不扛得住”，再问“能赚多少”。
+    </div>
+
+    <!-- ===================== 第十节 ===================== -->
+    <h2 id="s10">十、作者构思：双纺锤体与焦距扩散</h2>
+
+    <h3>我为什么要发明这个模型</h3>
+    <p>打开任何一家券商的期权链，你面对的是几百行、十几列的数字：行权价、买价、卖价、成交量、持仓量、IV……要同时判断“哪几行好成交”“哪里的 IV 异常”“我的两条腿落在哪里”，几乎全靠肉眼和经验，新手尤其吃力。</p>
+    <p>我的想法是：<span class="highlight-ink">能不能把一整条期权链，变成一个一眼就能读懂的“形状”？</span>胖的地方好成交，瘦的地方难成交；颜色暖的地方市场怕得凶，颜色冷的地方市场平静；而你的价差单，就是压在这个形状上的一条带子。这就是“纺锤体”。</p>
+
+    <h3>怎么读一个纺锤体</h3>
+    <p>把一个到期日的所有行权价排成一条横轴，每个行权价上画一段上下对称的“身体”：</p>
+    <ul class="pillar-list">
+      <li><strong>胖瘦 = 流动性</strong>：越胖，买卖价差越窄、挂单越厚，越好成交；越瘦，越难成交。持仓量只占很小的权重，防止被“持仓量陷阱”误导。</li>
+      <li><strong>颜色 = 情绪热度</strong>：从冷蓝、琥珀到深红，越红表示这个位置的 IV 相对越高、市场越恐慌。</li>
+      <li><strong>虚线轮廓 = 标准纺锤体</strong>：假设整个市场“同一个波动率、均匀正常”时，理论上应有的形状。它是一把<strong>尺子</strong>。</li>
+      <li><strong>实体 = 现实纺锤体</strong>：真实期权链画出来的形状。</li>
+      <li><strong>偏差 = 现实 − 标准</strong>：实体比虚线胖，说明这里比“正常”更好成交；比虚线瘦，说明这里异常难成交。偏差越大越值得注意。</li>
+    </ul>
+
+    <div class="figure-box">
+      <svg id="spindle-svg" viewBox="0 0 640 300" role="img" aria-label="纺锤体示意图（假设数据）"></svg>
+    </div>
+    <div class="figure-caption">示意图：DEMO 标的，现价 100，横轴为行权价 70 到 130。实体是“现实纺锤体”，虚线是“标准纺锤体”，颜色表示情绪热度（红 = 更热），紫色竖带是一个 95 / 90 的牛市看跌价差，圆圈是“焦点”。图中形状为讲解而生成，<strong>不是任何真实期权链</strong>。</div>
+
+    <p>读这张图，你可以说出三句话：第一，<strong>平价附近最胖</strong>，所以平价附近最好成交；第二，<strong>下方的看跌一侧比虚线瘦、颜色偏红</strong>，说明防暴跌的保险又贵又难成交；第三，紫色价差带<strong>压在比平价更瘦、颜色更暖的一侧</strong>，意味着这单的两条腿都比平价附近更难成交、也更“怕”，开仓前要核对每一条腿的买卖价差。</p>
+
+    <h3>“双”纺锤体：为什么要两个</h3>
+    <p>只有现实纺锤体，你无法知道“瘦”是不是正常——远离平价的合约本来就该瘦一些。有了<strong>标准纺锤体</strong>作参照，才能判断“比应有的还要瘦”。两个叠在一起，看的是<strong>差距</strong>，而不是绝对值。</p>
+
+    <h3>“焦距扩散”：多个到期日怎么办</h3>
+    <p>把多个到期日按距离到期的天数从近到远排开，就得到一个有“远近”的立体图：近的到期日画得大、清晰，远的画得小、宽广（可选范围更宽，但每一档更瘦）。就像照相机的焦距：<strong>你盯住哪个位置，哪个位置就被放大、看清；其余的退成背景</strong>。</p>
+    <p>你最多可以同时选 <strong>3 个“焦点”</strong>（例如价差的两条腿加上一个对比位置）。选第 4 个时，最早选的那个自动让位。选中的焦点会并排显示它们各自的流动性、热度、偏差与风险提示，方便当场比较。</p>
+
+    <h3>价差体检：开仓前十秒的“红绿灯”</h3>
+    <p>输入你打算卖的行权价和买的行权价，系统把这两条腿在纺锤体上标出来，并检查几类风险：</p>
+    <ul class="pillar-list">
+      <li><strong>卖腿落在高热度区</strong>：卖出的合约所处位置的情绪热度偏高。收的权利金看似丰厚，但这正是市场在“怕”的地方，风险也在这里。</li>
+      <li><strong>流动性偏薄</strong>：任一腿的流动性得分偏低，进出困难、成本高。</li>
+      <li><strong>持仓量陷阱</strong>：账面持仓量很大，但当下盘口很薄。</li>
+      <li><strong>两条腿状况悬殊</strong>：一条腿好成交、另一条很难，平仓时可能出现“只平掉一条腿”的尴尬。</li>
+    </ul>
+    <p>它不是“买卖信号”，而是<strong>开仓前的体检报告</strong>：告诉你哪里该小心，决定权始终在你手上。</p>
+
+    <h3>目前的状态：只是设计和原型，参数是“拟定”</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>项目</th><th>当前设计（均为拟定）</th></tr></thead>
+        <tbody>
+          <tr><td>胖瘦（流动性得分）</td><td>主要由买卖价差的紧密程度决定（约占 85%），持仓量只占约 15%；流动性很薄的合约设置上限；持仓量大但盘口薄的标记为“持仓量陷阱”</td></tr>
+          <tr><td>颜色（情绪热度）</td><td>综合 IV Rank、偏斜与该点相对同到期日的 IV；若缺少历史数据，权重自动重新分配</td></tr>
+          <tr><td>偏差</td><td>（现实 − 标准）÷ max（标准, 0.2），并限制在 −1 到 +1 之间，避免被极端值拉偏</td></tr>
+          <tr><td>焦点数量</td><td>最多 3 个，超出时先进先出</td></tr>
+          <tr><td>风险提示线</td><td>卖腿热度约 0.70 以上、流动性得分低于约 0.35 时给出提示</td></tr>
+          <tr><td>数据模式</td><td>实时、快照、降级、不可用四档；“演示模式”只使用合成数据，不读取任何真实持仓</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>请特别注意：<strong>这些权重与阈值是拟定值，没有经过真实期权链的回测校准</strong>；3D 图能否在目标页面上直接点选，也尚待验证。它现在是一个<em>帮你读链的思路</em>，还不是一个已验证的工具。读完整页之后，即使没有这个模型，你依然可以用第六节的方法手动判断流动性，用第五节的方法手动判断热度。</p>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      纺锤体把期权链变成一个形状：胖 = 好成交，红 = 市场怕，虚线 = 正常应该的样子，紫带 = 你的价差；多看“比虚线差多少”，少看绝对数字。
+    </div>
+
+    <!-- ===================== 第十一节 ===================== -->
+    <h2 id="s11">十一、实操：从看链到平仓的完整流程</h2>
+
+    <h3>开仓前的十个问题</h3>
+    <p>每次下单前，把下面十条过一遍。能当场回答的才开仓：</p>
+    <ul class="checklist">
+      <li><strong>我的观点是什么？</strong>方向、幅度、时间窗口，各用一句话写下来。</li>
+      <li><strong>我是买方还是卖方？</strong>我清楚自己的最大亏损在哪里吗？</li>
+      <li><strong>最坏情况亏多少？</strong>一手最大亏损乘以手数，占账户多大比例，我扛得住吗？</li>
+      <li><strong>盈亏平衡点在哪？</strong>现价到平衡点的距离，在到期前有现实可能吗？</li>
+      <li><strong>IV 现在高还是低？</strong>我是在“贵的时候买”还是“便宜的时候卖”？</li>
+      <li><strong>财报或重大事件落在到期日之前吗？</strong>我是否理解波动率冲击？</li>
+      <li><strong>每条腿的买卖价差多大？</strong>进场成本占权利金的比例能接受吗？</li>
+      <li><strong>持仓量与成交量是否支撑我随时平仓？</strong>是否是“持仓量陷阱”？</li>
+      <li><strong>被指派怎么办？</strong>有现金接货吗？除息日在到期前吗？</li>
+      <li><strong>我什么时候平仓？</strong>盈利目标、止损线、最晚平仓日，开仓前就定好。</li>
+    </ul>
+
+    <h3>下单的操作步骤</h3>
+    <ol class="step-list">
+      <li><strong>打开期权链</strong>，选定到期日。新手一般从 30 到 60 天左右的到期日练手，时间衰减和事件风险都相对好控制。</li>
+      <li><strong>选行权价</strong>：先看 Delta 与概率，再看买卖价差与成交量，排除“看着便宜、其实没人要”的行。</li>
+      <li><strong>算清最坏结果</strong>：用第七节的公式，或第二节的计算器，写下最大盈利、最大亏损与平衡点。</li>
+      <li><strong>用限价单</strong>：价差单用组合限价（净价），从中间价附近挂；成交不了就微调，不要用市价单。</li>
+      <li><strong>核对预览页</strong>：开仓 / 平仓字样、买卖方向、行权价、到期日、手数、净价，逐项读一遍再提交。</li>
+      <li><strong>设好提醒</strong>：到期前一周、除息日前、财报日前各设一个提醒。</li>
+    </ol>
+
+    <h3>持仓期间看什么</h3>
+    <ul class="pillar-list">
+      <li><strong>盈利达到最大盈利的一半左右</strong>，很多人会选择提前平仓，把剩下的风险和时间留给下一笔；这是一种常见的纪律，不是硬规则。</li>
+      <li><strong>亏损接近事先定的止损线</strong>，按计划处理，而不是“再等等看”。</li>
+      <li><strong>Delta 与 Gamma 悄悄变大</strong>，说明仓位正在变得更激进，需要重新评估。</li>
+      <li><strong>距到期不到一周</strong>，Gamma 和钉住风险急剧上升，卖方通常应主动了结。</li>
+    </ul>
+
+    <h3>新手最常犯的七个错误</h3>
+    <ol class="step-list">
+      <li>只看权利金便宜，不看买卖价差和成交量。</li>
+      <li>忘了乘数，把 2.40 当成 2.40 美元而不是 240 美元。</li>
+      <li>把“Delta 0.30”当成“有 30% 把握”，把近似当成承诺。</li>
+      <li>方向看对了，却因为财报后波动率塌陷而不赚钱。</li>
+      <li>卖出裸看涨 / 裸看跌却不知道尾部风险。</li>
+      <li>拖到最后一天，被指派后手足无措。</li>
+      <li>亏了就“滚动”，把小亏滚成大亏，却从未问过“今天还会新开这一笔吗”。</li>
+    </ol>
+
+    <div class="plain-box">
+      <span class="plain-label">白话一句话</span>
+      好的实操就是一份清单：开仓前把最坏结果写下来，持仓中按计划行动，到期前主动了结。
+    </div>
+
+    <!-- ===================== 术语表 ===================== -->
+    <h2 id="glossary">十二、术语表：九十多个名词的白话解释</h2>
+
+    <p>按字母或拼音在下面的框里搜索，也可以直接往下读。每个词都用一两句白话解释，并尽量指出它在哪一节出现。</p>
+
+    <input type="search" id="glossary-search" placeholder="搜索术语，例如：Delta、持仓量、价差……" aria-label="搜索术语" />
+    <p id="glossary-empty">没有找到匹配的术语，试试别的关键词。</p>
+
+    <dl class="glossary" id="glossary-list">
+      <div class="glossary-group">一、合约与基本动作</div>
+
+      <dt>期权<span class="en">Option</span></dt>
+      <dd>一份有期限的选择权合同：付权利金，买到“按约定价买入或卖出”的权利而没有义务。（第一节）</dd>
+
+      <dt>看涨期权<span class="en">Call</span></dt>
+      <dd>“按行权价买入”的权利，通常在你看涨时买。（第二节）</dd>
+
+      <dt>看跌期权<span class="en">Put</span></dt>
+      <dd>“按行权价卖出”的权利，常用来给股票买保险或押下跌。（第二节）</dd>
+
+      <dt>权利金<span class="en">Premium</span></dt>
+      <dd>期权的价格。买方付出，卖方收入。报价是每股的价格，一手要乘以 100。（第一节）</dd>
+
+      <dt>行权价<span class="en">Strike / Exercise Price</span></dt>
+      <dd>合约里约定的买入或卖出价格。（第一节）</dd>
+
+      <dt>到期日<span class="en">Expiration</span></dt>
+      <dd>权利失效的最后日期。（第一节）</dd>
+
+      <dt>距到期天数<span class="en">DTE, Days to Expiration</span></dt>
+      <dd>从今天到到期日还剩多少天，时间衰减和 Gamma 都和它紧密相关。（第三、四节）</dd>
+
+      <dt>标的<span class="en">Underlying</span></dt>
+      <dd>期权针对的那只股票、ETF 或指数。（第一节）</dd>
+
+      <dt>合约乘数<span class="en">Multiplier</span></dt>
+      <dd>一手合约对应的股数，标准股票期权是 100。（第一节）</dd>
+
+      <dt>多头 / 买方<span class="en">Long</span></dt>
+      <dd>持有期权的一方：付权利金，拥有权利。（第二节）</dd>
+
+      <dt>空头 / 卖方<span class="en">Short</span></dt>
+      <dd>卖出期权的一方：收权利金，承担义务。（第二节）</dd>
+
+      <dt>买入开仓 / 卖出开仓<span class="en">BTO / STO</span></dt>
+      <dd>新建仓位的两种方式：新买入、新卖出。（第二节）</dd>
+
+      <dt>卖出平仓 / 买入平仓<span class="en">STC / BTC</span></dt>
+      <dd>了结已有仓位的两种方式：卖掉之前买的、买回之前卖的。（第二节）</dd>
+
+      <dt>美式期权<span class="en">American Style</span></dt>
+      <dd>到期前任何时候都可以行权，美国个股期权属于这一类。（第一节）</dd>
+
+      <dt>欧式期权<span class="en">European Style</span></dt>
+      <dd>只能在到期日行权，许多指数期权属于这一类。（第一节）</dd>
+
+      <dt>周权<span class="en">Weeklys</span></dt>
+      <dd>每周到期的期权，寿命短，时间衰减快，对事件和持仓管理的要求更高。（第一节）</dd>
+
+      <dt>长期期权<span class="en">LEAPS</span></dt>
+      <dd>到期日在一年以上的期权，时间价值多、衰减慢，Vega 大。（第三节）</dd>
+
+      <dt>期权链<span class="en">Option Chain</span></dt>
+      <dd>按行权价和到期日排列的全部期权报价表，是下单前看的主要界面。（第六节）</dd>
+
+      <div class="glossary-group">二、价值与状态</div>
+
+      <dt>价内<span class="en">ITM, In the Money</span></dt>
+      <dd>现在行权就有账面利润的状态：看涨是现价高于行权价，看跌是现价低于行权价。（第三节）</dd>
+
+      <dt>平价<span class="en">ATM, At the Money</span></dt>
+      <dd>现价约等于行权价，是最“摇摆”、Gamma 和时间价值最大的位置。（第三节）</dd>
+
+      <dt>价外<span class="en">OTM, Out of the Money</span></dt>
+      <dd>现在行权没有意义的状态，全靠未来变化，权利金里全是时间价值。（第三节）</dd>
+
+      <dt>内在价值<span class="en">Intrinsic Value</span></dt>
+      <dd>现在立刻行权能拿到的金额；价外期权的内在价值为零。（第三节）</dd>
+
+      <dt>时间价值<span class="en">Time Value</span></dt>
+      <dd>权利金超出内在价值的部分，是为“未来还有可能”付的钱，会随时间蒸发。（第三节）</dd>
+
+      <dt>盈亏平衡点<span class="en">Breakeven</span></dt>
+      <dd>到期时不赚不亏的股价。买看涨等于行权价加权利金。（第三节）</dd>
+
+      <dt>买卖平价关系<span class="en">Put-Call Parity</span></dt>
+      <dd>同一标的、同一行权价、同一到期日的看涨、看跌与股票价格之间必然满足的关系，保证两类期权的价格不会各自乱飘。（第三节扩展阅读）</dd>
+
+      <div class="glossary-group">三、希腊字母与波动率</div>
+
+      <dt>希腊字母<span class="en">The Greeks</span></dt>
+      <dd>衡量期权价格对各种因素敏感度的一组指标：Delta、Gamma、Theta、Vega、Rho。（第四节）</dd>
+
+      <dt>Delta<span class="en">Δ</span></dt>
+      <dd>股价变 1 元，期权价格变多少；也粗略近似“到期价内的概率”和“相当于多少股股票”。（第四节）</dd>
+
+      <dt>Gamma<span class="en">Γ</span></dt>
+      <dd>股价变 1 元，Delta 变多少；平价、临近到期时最大，放大了仓位的不稳定性。（第四节）</dd>
+
+      <dt>Theta<span class="en">Θ</span></dt>
+      <dd>每过一天，期权价格损失多少；买方失血，卖方收租。（第四节）</dd>
+
+      <dt>Vega<span class="en">ν</span></dt>
+      <dd>隐含波动率变 1 个百分点，期权价格变多少；远月、平价最敏感。（第四节）</dd>
+
+      <dt>Rho<span class="en">ρ</span></dt>
+      <dd>利率变 1 个百分点，期权价格变多少；短期期权里通常影响很小。（第四节）</dd>
+
+      <dt>时间衰减<span class="en">Time Decay</span></dt>
+      <dd>期权的时间价值随时间流逝逐渐消失的现象，Theta 就是它的度量。（第三节）</dd>
+
+      <dt>历史波动率<span class="en">HV, Historical Volatility</span></dt>
+      <dd>用过去的价格算出来的波动幅度，是“已经发生”的摇摆。（第五节）</dd>
+
+      <dt>隐含波动率<span class="en">IV, Implied Volatility</span></dt>
+      <dd>从期权当前价格反推出来的市场预期波动，是“恐慌温度计”。（第五节）</dd>
+
+      <dt>IV Rank<span class="en">IV 排名</span></dt>
+      <dd>当前 IV 在过去一年最低与最高之间的位置，0 到 100%。（第五节）</dd>
+
+      <dt>IV 百分位<span class="en">IV Percentile</span></dt>
+      <dd>过去一年中，有多少比例的天数 IV 比现在低。（第五节）</dd>
+
+      <dt>波动率偏斜 / 微笑<span class="en">Skew / Smile</span></dt>
+      <dd>同一到期日、不同行权价的 IV 曲线；股票常见“越低的看跌 IV 越高”。（第五节）</dd>
+
+      <dt>期限结构<span class="en">Term Structure</span></dt>
+      <dd>同一行权价、不同到期日的 IV 曲线；重大事件前近月 IV 常被推高。（第五节）</dd>
+
+      <dt>波动率冲击<span class="en">IV Crush</span></dt>
+      <dd>事件（如财报）落地后，隐含波动率迅速回落，让期权价格骤降，即使方向看对买方也可能亏。（第四节）</dd>
+
+      <div class="glossary-group">四、流动性与成交</div>
+
+      <dt>买价<span class="en">Bid</span></dt>
+      <dd>做市商愿意买入的最高价，也就是你卖出时能拿到的价格。（第六节）</dd>
+
+      <dt>卖价<span class="en">Ask</span></dt>
+      <dd>做市商愿意卖出的最低价，也就是你买入时要付的价格。（第六节）</dd>
+
+      <dt>买卖价差<span class="en">Bid-Ask Spread</span></dt>
+      <dd>卖价减买价，是你进出场的隐形成本，越窄越好。（第六节）</dd>
+
+      <dt>中间价<span class="en">Mid</span></dt>
+      <dd>买价与卖价的平均，限价单常从这里开始挂。（第六节）</dd>
+
+      <dt>限价单<span class="en">Limit Order</span></dt>
+      <dd>指定“最多愿意付多少 / 最少愿意收多少”的订单，不会以更差的价格成交。（第六节）</dd>
+
+      <dt>市价单<span class="en">Market Order</span></dt>
+      <dd>不管价格、立刻成交的订单；在价差宽的期权上很危险。（第六节）</dd>
+
+      <dt>滑点<span class="en">Slippage</span></dt>
+      <dd>你预期的成交价和实际成交价之间的差距。（第六节）</dd>
+
+      <dt>成交量<span class="en">Volume</span></dt>
+      <dd>今天已经成交的手数，反映当日热度。（第六节）</dd>
+
+      <dt>持仓量<span class="en">Open Interest, OI</span></dt>
+      <dd>目前还没有平仓的合约总数，反映累积的参与度，通常一天更新一次。（第六节）</dd>
+
+      <dt>流动性<span class="en">Liquidity</span></dt>
+      <dd>想成交时能否以接近理想的价格迅速成交；窄价差、厚挂单、足够的成交量与持仓量是它的特征。（第六节）</dd>
+
+      <dt>持仓量陷阱<span class="en">OI Trap</span></dt>
+      <dd>账面持仓量很大，但当下盘口很薄、价差很宽，看着热闹却很难成交。（第六节、第十节）</dd>
+
+      <dt>做市商<span class="en">Market Maker</span></dt>
+      <dd>持续为期权挂出买价和卖价、提供流动性的机构，靠买卖价差获利。（第六节）</dd>
+
+      <div class="glossary-group">五、策略与组合</div>
+
+      <dt>价差<span class="en">Spread</span></dt>
+      <dd>同时买一份、卖一份，让风险互相抵消，把最大亏损框在已知数里。（第七节）</dd>
+
+      <dt>垂直价差<span class="en">Vertical Spread</span></dt>
+      <dd>两条腿到期日相同、行权价不同的价差，最基础的一类。（第七节）</dd>
+
+      <dt>借记价差<span class="en">Debit Spread</span></dt>
+      <dd>开仓时净付出权利金的价差，最大亏损就是付出的净额。（第七节）</dd>
+
+      <dt>贷记价差<span class="en">Credit Spread</span></dt>
+      <dd>开仓时净收入权利金的价差，最大盈利是收入，最大亏损是宽度减收入。（第七节）</dd>
+
+      <dt>价差宽度<span class="en">Width</span></dt>
+      <dd>两条腿行权价之差，乘以 100 就是一手价差的最大潜在变动。（第七节）</dd>
+
+      <dt>保护腿<span class="en">Long Leg / Wing</span></dt>
+      <dd>价差中买入的那条腿，用来给卖出的腿封顶风险。（第七节）</dd>
+
+      <dt>备兑看涨<span class="en">Covered Call</span></dt>
+      <dd>持有 100 股，同时卖出 1 份看涨期权，用上涨空间换权利金。（第七节）</dd>
+
+      <dt>保护性看跌<span class="en">Protective Put</span></dt>
+      <dd>持有 100 股，同时买入 1 份看跌期权，给持仓买保险。（第七节）</dd>
+
+      <dt>现金担保看跌<span class="en">Cash-Secured Put, CSP</span></dt>
+      <dd>备足全额现金，卖出 1 份看跌，愿意在更低价接货并收取权利金。（第七节）</dd>
+
+      <dt>领口<span class="en">Collar</span></dt>
+      <dd>持股，同时买看跌、卖看涨，把盈亏框在一个区间里。（第七节）</dd>
+
+      <dt>跨式<span class="en">Straddle</span></dt>
+      <dd>同一行权价同时买看涨与看跌，赌大幅波动。（第七节）</dd>
+
+      <dt>宽跨式<span class="en">Strangle</span></dt>
+      <dd>买入价外的看涨与价外的看跌，比跨式便宜，但需要更大的波动。（第七节）</dd>
+
+      <dt>铁鹰<span class="en">Iron Condor</span></dt>
+      <dd>一个熊市看涨价差加一个牛市看跌价差，赌标的在区间内盘整。（第七节）</dd>
+
+      <dt>日历价差<span class="en">Calendar Spread</span></dt>
+      <dd>卖近月、买同价远月，赚两者时间衰减速度的差。（第七节）</dd>
+
+      <dt>对角价差<span class="en">Diagonal Spread</span></dt>
+      <dd>两条腿到期日和行权价都不同的价差，是日历价差的变形。（第七节）</dd>
+
+      <dt>裸卖<span class="en">Naked / Uncovered</span></dt>
+      <dd>卖出期权而没有持股或保护腿，风险最大，看涨一侧理论亏损无限。（第九节）</dd>
+
+      <dt>滚动<span class="en">Roll</span></dt>
+      <dd>把即将到期的合约平掉，同时开一份更远到期的合约，延续仓位。（第七节）</dd>
+
+      <dt>对冲<span class="en">Hedge</span></dt>
+      <dd>用一个仓位去抵消另一个仓位的风险，例如用指数看跌给股票组合买保险。（第九节）</dd>
+
+      <div class="glossary-group">六、行权、指派与到期</div>
+
+      <dt>行权<span class="en">Exercise</span></dt>
+      <dd>买方行使权利，按行权价买入或卖出标的。（第八节）</dd>
+
+      <dt>指派<span class="en">Assignment</span></dt>
+      <dd>买方行权时，被分配到义务的卖方必须履约。你无法预知也无法拒绝。（第八节）</dd>
+
+      <dt>提前行权<span class="en">Early Exercise</span></dt>
+      <dd>美式期权的买方在到期前就行权，常见于除息日前的深度价内看涨。（第八节）</dd>
+
+      <dt>除息日<span class="en">Ex-Dividend Date</span></dt>
+      <dd>这一天之后买入股票将不再享有最近一次股息。它会增加价内看涨被提前行权的风险。（第八节）</dd>
+
+      <dt>钉住风险<span class="en">Pin Risk</span></dt>
+      <dd>到期时股价恰好停在行权价附近，卖方无法确定会不会被指派，周末还要承受价格变动。（第八节）</dd>
+
+      <dt>实物交割<span class="en">Physical Settlement</span></dt>
+      <dd>行权时真的交收股票，个股期权属于此类。（第八节）</dd>
+
+      <dt>现金交割<span class="en">Cash Settlement</span></dt>
+      <dd>按差额结算现金，没有交收股票，许多指数期权属于此类。（第八节）</dd>
+
+      <div class="glossary-group">七、风险与账户</div>
+
+      <dt>杠杆<span class="en">Leverage</span></dt>
+      <dd>用较小的资金控制较大价值的敞口；放大盈利，也放大亏损。（第九节）</dd>
+
+      <dt>保证金<span class="en">Margin</span></dt>
+      <dd>卖出期权时券商要求押的担保资金，不是亏损的上限。（第九节）</dd>
+
+      <dt>名义敞口<span class="en">Notional Exposure</span></dt>
+      <dd>把期权按 Delta 折算后，相当于持有多少价值的标的。（第九节）</dd>
+
+      <dt>Beta 加权 Delta<span class="en">Beta-Weighted Delta</span></dt>
+      <dd>把各标的的 Delta 敞口按各自对大盘的 Beta 折算后加总，用来看“大盘下跌时整体会怎样”。（第九节）</dd>
+
+      <dt>压力测试<span class="en">Stress Test</span></dt>
+      <dd>假设大盘下跌、波动率飙升等极端情景，重新给全部合约定价，算出整体亏损。（第九节）</dd>
+
+      <dt>最大回撤<span class="en">Drawdown</span></dt>
+      <dd>净值从最高点往下跌的最大幅度，衡量你“最难受的时候”。（第九节）</dd>
+
+      <dt>集中度<span class="en">Concentration</span></dt>
+      <dd>仓位集中在同一只股票或同一产业链的程度，集中就是把分散的优势丢掉。（第九节）</dd>
+
+      <dt>风险敞口<span class="en">Risk Exposure</span></dt>
+      <dd>当某个条件变化时，你的账户可能受到影响的程度，可以用 Delta、Vega、压力测试等度量。（第九节）</dd>
+
+      <div class="glossary-group">八、纺锤体模型专用词（作者构思）</div>
+
+      <dt>标准纺锤体<span class="en">Standard Spindle</span></dt>
+      <dd>假设市场用“同一个波动率”定价时，理论上应有的流动性形状，是一把尺子。（第十节）</dd>
+
+      <dt>现实纺锤体<span class="en">Real Spindle</span></dt>
+      <dd>用真实期权链画出来的形状：胖瘦是流动性，颜色是情绪热度。（第十节）</dd>
+
+      <dt>流动性得分<span class="en">Liquidity Score</span></dt>
+      <dd>0 到 1 的分数，主要看买卖价差紧不紧，持仓量只占小部分，决定纺锤体的胖瘦。（第十节）</dd>
+
+      <dt>情绪热度<span class="en">Sentiment Heat</span></dt>
+      <dd>综合 IV Rank、偏斜与相对 IV 得出的 0 到 1 的分数，决定纺锤体的颜色，越红越怕。（第十节）</dd>
+
+      <dt>偏差<span class="en">Spread Deviation</span></dt>
+      <dd>现实纺锤体相对标准纺锤体的差距，正值表示比应有的更好成交，负值表示更难成交。（第十节）</dd>
+
+      <dt>焦点<span class="en">Focus</span></dt>
+      <dd>你在图上选中的位置，最多同时 3 个；选第 4 个时最早的自动让位。（第十节）</dd>
+
+      <dt>焦距扩散<span class="en">Focal Spread</span></dt>
+      <dd>不同到期日按距到期天数呈现不同的大小与宽度，像相机焦距一样让你聚焦关注的位置。（第十节）</dd>
+
+      <dt>价差体检<span class="en">Spread Check</span></dt>
+      <dd>开仓前对你选的两条腿做的检查：卖腿是否落在高热度区、是否流动性过薄、是否持仓量陷阱。（第十节）</dd>
+
+      <dt>演示模式<span class="en">Demo Mode</span></dt>
+      <dd>只使用合成的假数据展示模型，不读取任何真实账户数据。（第十节）</dd>
+    </dl>
+
+    <h2>延伸阅读</h2>
+    <ul class="pillar-list">
+      <li>OCC（Options Clearing Corporation）：《标准化期权的特征与风险》（<em>Characteristics and Risks of Standardized Options</em>），所有美国期权账户开户时都会提供，是规则与风险的权威原文。</li>
+      <li>Cboe Options Institute：期权基础与策略的公开教育材料。</li>
+      <li>Fischer Black 与 Myron Scholes（1973）：《期权与公司负债的定价》（<em>The Pricing of Options and Corporate Liabilities</em>），发表于 <em>Journal of Political Economy</em>。</li>
+      <li>John C. Hull：《期权、期货及其他衍生品》（<em>Options, Futures, and Other Derivatives</em>），衍生品领域最常用的教科书。</li>
+    </ul>
+
+    <footer class="article-footer">
+      <span>© 2026 Patrick Yang · CWCL 制度比较研究系列</span>
+      <a href="#top">回到顶部 ↑</a>
+    </footer>
+  </main>
+
+  <script>
+    /* ---------- reading progress ---------- */
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+    });
+
+    /* ---------- payoff calculator (assumed numbers, expiry P&L) ---------- */
+    (function () {
+      const PRESETS = {
+        lc:  { legs: [{ side: +1, type: 'C', k: 100, p: 3.00 }] },
+        sc:  { legs: [{ side: -1, type: 'C', k: 105, p: 1.50 }] },
+        lp:  { legs: [{ side: +1, type: 'P', k: 100, p: 2.80 }] },
+        sp:  { legs: [{ side: -1, type: 'P', k: 95,  p: 1.60 }] },
+        bcs: { legs: [{ side: +1, type: 'C', k: 100, p: 3.00 }, { side: -1, type: 'C', k: 105, p: 1.20 }] },
+        bps: { legs: [{ side: -1, type: 'P', k: 95,  p: 2.40 }, { side: +1, type: 'P', k: 90,  p: 1.10 }] }
+      };
+      const NAMES = {
+        lc: '买入看涨', sc: '卖出看涨', lp: '买入看跌', sp: '卖出看跌',
+        bcs: '牛市看涨价差（借记）', bps: '牛市看跌价差（贷记）'
+      };
+      const $ = (id) => document.getElementById(id);
+      const sel = $('calc-preset'), slider = $('calc-s'), sLabel = $('calc-s-label');
+      const k1 = $('calc-k1'), p1 = $('calc-p1'), k2 = $('calc-k2'), p2 = $('calc-p2');
+      const svg = $('calc-svg'), readout = $('calc-readout');
+      const NS = 'http://www.w3.org/2000/svg';
+      let legs = [];
+
+      function legValue(leg, s) {
+        const intrinsic = leg.type === 'C' ? Math.max(s - leg.k, 0) : Math.max(leg.k - s, 0);
+        return leg.side * (intrinsic - leg.p);
+      }
+      function pnl(s) {
+        let t = 0;
+        for (const l of legs) t += legValue(l, s);
+        return t * 100;
+      }
+      function load(key) {
+        legs = PRESETS[key].legs.map((l) => Object.assign({}, l));
+        k1.value = legs[0].k; p1.value = legs[0].p;
+        const two = legs.length > 1;
+        $('calc-k2-wrap').style.display = two ? '' : 'none';
+        $('calc-p2-wrap').style.display = two ? '' : 'none';
+        if (two) { k2.value = legs[1].k; p2.value = legs[1].p; }
+        draw();
+      }
+      function readInputs() {
+        const a = parseFloat(k1.value), b = parseFloat(p1.value);
+        if (isFinite(a)) legs[0].k = a;
+        if (isFinite(b) && b >= 0) legs[0].p = b;
+        if (legs.length > 1) {
+          const c = parseFloat(k2.value), d = parseFloat(p2.value);
+          if (isFinite(c)) legs[1].k = c;
+          if (isFinite(d) && d >= 0) legs[1].p = d;
+        }
+      }
+      function el(name, attrs) {
+        const e = document.createElementNS(NS, name);
+        for (const k in attrs) e.setAttribute(k, attrs[k]);
+        return e;
+      }
+      function draw() {
+        readInputs();
+        const W = 640, H = 260, L = 46, R = 14, T = 14, B = 30;
+        const lo = 60, hi = 140, n = 400;
+        const pts = [];
+        let mn = 0, mx = 0;
+        for (let i = 0; i <= n; i++) {
+          const s = lo + (hi - lo) * i / n, v = pnl(s);
+          pts.push([s, v]);
+          if (v < mn) mn = v;
+          if (v > mx) mx = v;
+        }
+        const pad = Math.max((mx - mn) * 0.12, 30);
+        const yLo = mn - pad, yHi = mx + pad;
+        const X = (s) => L + (s - lo) / (hi - lo) * (W - L - R);
+        const Y = (v) => T + (yHi - v) / (yHi - yLo) * (H - T - B);
+        svg.replaceChildren();
+
+        const y0 = Y(0);
+        const area = 'M' + X(lo) + ',' + y0 + ' ' + pts.map((p) => 'L' + X(p[0]).toFixed(2) + ',' + Y(p[1]).toFixed(2)).join(' ') + ' L' + X(hi) + ',' + y0 + ' Z';
+        const clipUp = el('clipPath', { id: 'clip-up' });
+        clipUp.appendChild(el('rect', { x: 0, y: 0, width: W, height: y0 }));
+        const clipDn = el('clipPath', { id: 'clip-dn' });
+        clipDn.appendChild(el('rect', { x: 0, y: y0, width: W, height: H - y0 }));
+        const defs = el('defs', {});
+        defs.appendChild(clipUp); defs.appendChild(clipDn);
+        svg.appendChild(defs);
+        svg.appendChild(el('path', { d: area, fill: '#1E3A8A', 'fill-opacity': '0.18', 'clip-path': 'url(#clip-up)' }));
+        svg.appendChild(el('path', { d: area, fill: '#991B1B', 'fill-opacity': '0.18', 'clip-path': 'url(#clip-dn)' }));
+
+        for (let s = 60; s <= 140; s += 10) {
+          svg.appendChild(el('line', { x1: X(s), y1: T, x2: X(s), y2: H - B, stroke: '#E2DDD5', 'stroke-width': 1 }));
+          const t = el('text', { x: X(s), y: H - 10, 'text-anchor': 'middle', 'font-size': 11, fill: '#475569' });
+          t.textContent = s;
+          svg.appendChild(t);
+        }
+        svg.appendChild(el('line', { x1: L, y1: y0, x2: W - R, y2: y0, stroke: '#475569', 'stroke-width': 1 }));
+        const z = el('text', { x: L - 6, y: y0 + 4, 'text-anchor': 'end', 'font-size': 11, fill: '#475569' });
+        z.textContent = '0';
+        svg.appendChild(z);
+        const tMax = el('text', { x: L - 6, y: Y(mx) + 4, 'text-anchor': 'end', 'font-size': 11, fill: '#1E3A8A' });
+        tMax.textContent = Math.round(mx);
+        svg.appendChild(tMax);
+        if (mn < 0) {
+          const tMin = el('text', { x: L - 6, y: Y(mn) + 4, 'text-anchor': 'end', 'font-size': 11, fill: '#991B1B' });
+          tMin.textContent = Math.round(mn);
+          svg.appendChild(tMin);
+        }
+        svg.appendChild(el('polyline', { points: pts.map((p) => X(p[0]).toFixed(2) + ',' + Y(p[1]).toFixed(2)).join(' '), fill: 'none', stroke: '#1E293B', 'stroke-width': 2.2 }));
+
+        const s = parseFloat(slider.value);
+        svg.appendChild(el('line', { x1: X(s), y1: T, x2: X(s), y2: H - B, stroke: '#1E3A8A', 'stroke-width': 1.5, 'stroke-dasharray': '4 4' }));
+        svg.appendChild(el('circle', { cx: X(s), cy: Y(pnl(s)), r: 4.5, fill: '#1E3A8A' }));
+
+        const be = [];
+        for (let i = 1; i < pts.length; i++) {
+          const a = pts[i - 1], b = pts[i];
+          if ((a[1] < 0 && b[1] >= 0) || (a[1] > 0 && b[1] <= 0)) {
+            be.push(a[0] + (b[0] - a[0]) * (0 - a[1]) / (b[1] - a[1]));
+          }
+        }
+        const atEdgeMax = Math.abs(pnl(hi) - mx) < 1e-6 && pnl(hi) > pnl(hi - 1);
+        const atEdgeMin = Math.abs(pnl(hi) - mn) < 1e-6 && pnl(hi) < pnl(hi - 1);
+        const edgeLow = Math.abs(pnl(lo) - mx) < 1e-6 && pnl(lo) > pnl(lo + 1);
+        const edgeLowMin = Math.abs(pnl(lo) - mn) < 1e-6 && pnl(lo) < pnl(lo + 1);
+        const unlimitedUp = atEdgeMax || edgeLow;
+        const unlimitedDown = atEdgeMin || edgeLowMin;
+
+        const fmt = (v) => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(0) + ' 美元';
+        const maxTxt = unlimitedUp ? '约 +' + Math.round(mx) + ' 美元（图内上限，实际可能更大，理论无限或近似无限）' : fmt(mx);
+        const minTxt = unlimitedDown ? '约 −' + Math.abs(Math.round(mn)) + ' 美元（图内下限，实际可能更大）' : fmt(mn);
+        const net = legs.reduce((t, l) => t + l.side * -l.p, 0) * 100;
+        const netTxt = net >= 0 ? '净收入 ' + net.toFixed(0) + ' 美元（贷记）' : '净付出 ' + Math.abs(net).toFixed(0) + ' 美元（借记）';
+        const beTxt = be.length ? be.map((v) => v.toFixed(2)).join('、') : '图内没有';
+        readout.innerHTML = '<strong>' + NAMES[sel.value] + '</strong>（每手 100 股）<br>开仓：' + netTxt +
+          '<br>最大盈利：' + maxTxt + '　最大亏损：' + minTxt +
+          '<br>盈亏平衡点：' + beTxt +
+          '<br>到期股价 ' + s.toFixed(1) + ' 时的盈亏：<strong>' + fmt(pnl(s)) + '</strong>';
+      }
+      sel.addEventListener('change', () => load(sel.value));
+      [k1, p1, k2, p2].forEach((e) => e.addEventListener('input', draw));
+      slider.addEventListener('input', () => { sLabel.textContent = slider.value; draw(); });
+      load(sel.value);
+    })();
+
+    /* ---------- spindle illustration (generated, invented data) ---------- */
+    (function () {
+      const svg = document.getElementById('spindle-svg');
+      if (!svg) return;
+      const NS = 'http://www.w3.org/2000/svg';
+      const el = (name, attrs) => {
+        const e = document.createElementNS(NS, name);
+        for (const k in attrs) e.setAttribute(k, attrs[k]);
+        return e;
+      };
+      const W = 640, H = 300, L = 34, R = 20, MID = 150, HALF = 104;
+      const K0 = 70, K1 = 130;
+      const X = (k) => L + (k - K0) / (K1 - K0) * (W - L - R);
+      const std = (k) => {
+        const z = (k - 100) / 100;
+        return 0.9 * Math.exp(-z * z / (2 * 0.16 * 0.16));
+      };
+      const real = (k) => {
+        const f = k < 100 ? 0.45 + 0.55 * Math.exp(-(100 - k) / 10) : 0.85 + 0.15 * Math.exp(-(k - 100) / 10);
+        return std(k) * f * (k % 5 === 0 ? 1.06 : 1);
+      };
+      const heat = (k) => k <= 100 ? 0.28 + 0.67 * ((100 - k) / 30) : 0.28 - 0.12 * ((k - 100) / 30);
+      const STOPS = [[0, [59, 111, 182]], [0.4, [216, 180, 90]], [0.7, [217, 130, 43]], [1, [153, 27, 27]]];
+      const color = (h) => {
+        h = Math.max(0, Math.min(1, h));
+        for (let i = 1; i < STOPS.length; i++) {
+          if (h <= STOPS[i][0]) {
+            const a = STOPS[i - 1], b = STOPS[i], t = (h - a[0]) / (b[0] - a[0]);
+            const c = a[1].map((v, j) => Math.round(v + (b[1][j] - v) * t));
+            return 'rgb(' + c.join(',') + ')';
+          }
+        }
+        return 'rgb(153,27,27)';
+      };
+
+      /* spread band: short 95P, long 90P */
+      const band = el('rect', { x: X(90), y: 26, width: X(95) - X(90), height: H - 66, fill: '#7C3AED', 'fill-opacity': '0.13' });
+      svg.appendChild(band);
+
+      const bw = (W - L - R) / (K1 - K0);
+      for (let k = K0; k <= K1; k++) {
+        const h = real(k) * HALF;
+        svg.appendChild(el('rect', { x: X(k) - bw / 2, y: MID - h, width: bw + 0.4, height: 2 * h, fill: color(heat(k)) }));
+      }
+
+      const top = [], bot = [];
+      for (let k = K0; k <= K1; k += 1) {
+        top.push(X(k).toFixed(1) + ',' + (MID - std(k) * HALF).toFixed(1));
+        bot.push(X(k).toFixed(1) + ',' + (MID + std(k) * HALF).toFixed(1));
+      }
+      svg.appendChild(el('polyline', { points: top.join(' '), fill: 'none', stroke: '#1E293B', 'stroke-width': 1.4, 'stroke-dasharray': '5 4' }));
+      svg.appendChild(el('polyline', { points: bot.join(' '), fill: 'none', stroke: '#1E293B', 'stroke-width': 1.4, 'stroke-dasharray': '5 4' }));
+
+      svg.appendChild(el('line', { x1: X(95), y1: 26, x2: X(95), y2: H - 40, stroke: '#7C3AED', 'stroke-width': 1.2 }));
+      svg.appendChild(el('line', { x1: X(90), y1: 26, x2: X(90), y2: H - 40, stroke: '#7C3AED', 'stroke-width': 1.2 }));
+
+      [95, 90].forEach((k, i) => {
+        svg.appendChild(el('circle', { cx: X(k), cy: MID, r: 11, fill: 'none', stroke: '#FFFFFF', 'stroke-width': 3 }));
+        svg.appendChild(el('circle', { cx: X(k), cy: MID, r: 11, fill: 'none', stroke: '#1E293B', 'stroke-width': 1.5 }));
+        const t = el('text', { x: X(k), y: MID + 4, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#1E293B' });
+        t.textContent = i + 1;
+        svg.appendChild(t);
+      });
+
+      const label = (x, y, txt, anchor, fill, size, weight) => {
+        const t = el('text', { x: x, y: y, 'text-anchor': anchor || 'middle', 'font-size': size || 12, 'font-weight': weight || 400, fill: fill || '#475569' });
+        t.textContent = txt;
+        svg.appendChild(t);
+      };
+      label(X(95), 18, '卖腿 95 看跌', 'start', '#5B21B6', 12, 600);
+      label(X(90) - 4, 18, '买腿 90 看跌', 'end', '#5B21B6', 12, 600);
+      label(X(112), 38, '平价 100 附近最胖，最好成交', 'start', '#1E293B', 12, 600);
+      label(X(78), MID - HALF - 8, '实体比虚线瘦且偏红', 'middle', '#991B1B', 12, 600);
+      label(X(80), 238, '虚线 = 标准纺锤体', 'middle', '#475569', 12, 400);
+
+      for (let k = 70; k <= 130; k += 10) {
+        svg.appendChild(el('line', { x1: X(k), y1: H - 30, x2: X(k), y2: H - 25, stroke: '#475569' }));
+        label(X(k), H - 12, k, 'middle', '#475569', 11, 400);
+      }
+      svg.appendChild(el('line', { x1: L, y1: H - 30, x2: W - R, y2: H - 30, stroke: '#475569', 'stroke-width': 1 }));
+
+      /* colour key */
+      const gx = W - R - 150, gy = H - 64;
+      for (let i = 0; i < 30; i++) {
+        svg.appendChild(el('rect', { x: gx + i * 4, y: gy, width: 4.2, height: 8, fill: color(i / 29) }));
+      }
+      label(gx, gy - 4, '冷', 'start', '#475569', 11, 400);
+      label(gx + 120, gy - 4, '热（更怕）', 'end', '#475569', 11, 400);
+    })();
+
+    /* ---------- glossary search ---------- */
+    (function () {
+      const input = document.getElementById('glossary-search');
+      const list = document.getElementById('glossary-list');
+      const empty = document.getElementById('glossary-empty');
+      if (!input || !list) return;
+      const items = [];
+      let current = null;
+      Array.from(list.children).forEach((node) => {
+        if (node.classList.contains('glossary-group')) { current = { group: node, entries: [] }; items.push(current); }
+        else if (node.tagName === 'DT') { current.entries.push({ dt: node, dd: null }); }
+        else if (node.tagName === 'DD') { current.entries[current.entries.length - 1].dd = node; }
+      });
+      input.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        let shown = 0;
+        items.forEach((g) => {
+          let any = false;
+          g.entries.forEach((e) => {
+            const text = (e.dt.textContent + ' ' + (e.dd ? e.dd.textContent : '')).toLowerCase();
+            const hit = !q || text.indexOf(q) !== -1;
+            e.dt.style.display = hit ? '' : 'none';
+            if (e.dd) e.dd.style.display = hit ? '' : 'none';
+            if (hit) { any = true; shown++; }
+          });
+          g.group.style.display = any ? '' : 'none';
+        });
+        empty.style.display = shown === 0 ? 'block' : 'none';
+      });
+    })();
+  </script>
+</body>
+</html>
